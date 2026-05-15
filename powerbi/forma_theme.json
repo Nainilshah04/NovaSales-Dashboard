@@ -1,0 +1,55 @@
+{
+    "name": "Forma.ai NovaSales Theme",
+    "dataColors": [
+        "#6D28D9",
+        "#8B5CF6",
+        "#A78BFA",
+        "#C4B5FD",
+        "#1A0B2E",
+        "#10B981",
+        "#F59E0B",
+        "#EF4444",
+        "#3B82F6",
+        "#EC4899"
+    ],
+    "background": "#FFFFFF",
+    "foreground": "#1A0B2E",
+    "tableAccent": "#6D28D9",
+    "good": "#10B981",
+    "neutral": "#F59E0B",
+    "bad": "#EF4444",
+    "maximum": "#6D28D9",
+    "center": "#A78BFA",
+    "minimum": "#FCA5A5",
+    "null": "#E9E5F5",
+    "textClasses": {
+        "title": {
+            "fontFace": "Segoe UI",
+            "fontSize": 24,
+            "color": "#1A0B2E"
+        },
+        "header": {
+            "fontFace": "Segoe UI Semibold",
+            "fontSize": 14,
+            "color": "#6D28D9"
+        },
+        "label": {
+            "fontFace": "Segoe UI",
+            "fontSize": 11,
+            "color": "#64748B"
+        },
+        "callout": {
+            "fontFace": "Segoe UI",
+            "fontSize": 32,
+            "color": "#6D28D9"
+        }
+    },
+    "visualStyles": {
+        "*": {
+            "*": {
+                "background": [{"color": {"solid": {"color": "#FFFFFF"}}}],
+                "border": [{"color": {"solid": {"color": "#E9E5F5"}}, "radius": 8}]
+            }
+        }
+    }
+}
