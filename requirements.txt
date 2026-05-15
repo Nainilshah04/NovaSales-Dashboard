@@ -1,0 +1,10 @@
+streamlit==1.32.0
+pandas==2.2.1
+numpy==1.26.4
+plotly==5.20.0
+openpyxl==3.1.2
+faker==24.3.0
+sqlalchemy==2.0.29
+xlsxwriter==3.2.0
+pillow==10.2.0
+streamlit-extras==0.4.2
