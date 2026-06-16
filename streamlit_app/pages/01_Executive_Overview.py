@@ -150,7 +150,7 @@ chart1, chart2 = st.columns([3, 2])
 # Plotly theme configuration
 PLOTLY_THEME = dict(
     plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)',
-    font=dict(color=c['text'], family='Manrope'),
+    font=dict(color=c['text'], family='Inter'),
     xaxis=dict(gridcolor=c['grid'], color=c['text']),
     yaxis=dict(gridcolor=c['grid'], color=c['text']),
 )
@@ -178,13 +178,13 @@ with chart1:
         line=dict(color=c['success'], width=2.5, dash='dot'), marker=dict(size=7),
     ))
     fig.update_layout(
-        title='<b>Monthly Payout Trend</b>',
-        title_font=dict(size=16, family='Manrope'),
+        title=None,
         xaxis_title='Month', yaxis_title='Amount (₹)',
         hovermode='x unified', legend=dict(orientation='h', y=1.12),
-        margin=dict(t=50, b=30, l=10, r=10),
+        margin=dict(t=30, b=30, l=10, r=10),
         **PLOTLY_THEME,
     )
+    st.markdown("#### Monthly Payout Trend")
     st.plotly_chart(fig, use_container_width=True)
 
 with chart2:
@@ -201,18 +201,18 @@ with chart2:
     fig2 = go.Figure(go.Pie(
         labels=bc.index.tolist(), values=bc.values, hole=0.6,
         marker=dict(colors=pie_colors),
-        textinfo='percent+label', textfont=dict(size=11, family='Manrope'),
+        textinfo='percent+label', textfont=dict(size=11, family='Inter'),
     ))
     fig2.update_layout(
-        title='<b>Attainment Distribution</b>',
-        title_font=dict(size=16, family='Manrope'),
-        paper_bgcolor='rgba(0,0,0,0)', font=dict(color=c['text'], family='Manrope'),
+        title=None,
+        paper_bgcolor='rgba(0,0,0,0)', font=dict(color=c['text'], family='Inter'),
         height=400,
-        margin=dict(t=50, b=30, l=10, r=10),
+        margin=dict(t=30, b=30, l=10, r=10),
         annotations=[dict(text=f'<b>{total_reps}</b><br>REPS', x=0.5, y=0.5,
-                          font_size=20, font_family='Manrope', showarrow=False,
+                          font_size=20, font_family='Inter', showarrow=False,
                           font_color=c['text'])]
     )
+    st.markdown("#### Attainment Distribution")
     st.plotly_chart(fig2, use_container_width=True)
 
 # ── Bottom: At-Risk + Region ─────────────────────────────────────
@@ -256,13 +256,13 @@ with b2:
         marker=dict(color=[c['primary'], c['success'], c['warning'], c['danger']]),
         text=region_summary['avg_attain'].apply(lambda x: f'{x:.1f}%'),
         textposition='outside',
-        textfont=dict(color=c['text'], family='Manrope'),
+        textfont=dict(color=c['text'], family='Inter'),
     ))
     fig3.add_hline(y=100, line_dash='dash', line_color=c['primary'],
                     annotation_text='Quota', annotation_font=dict(color=c['text']))
-    fig3.update_layout(title='<b>Avg Attainment by Region</b>',
-                        title_font=dict(size=16, family='Manrope'),
+    fig3.update_layout(title=None,
                         showlegend=False, height=350,
-                        margin=dict(t=50, b=30, l=10, r=10),
+                        margin=dict(t=30, b=30, l=10, r=10),
                         **PLOTLY_THEME)
+    st.markdown("#### Avg Attainment by Region")
     st.plotly_chart(fig3, use_container_width=True)

@@ -112,11 +112,11 @@ def inject_theme_css():
         {textwrap.dedent(css_vars)}
     }}
     
-    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     
     /* Apply Font and Core Theme Colors */
     html, body, [class*="css"], .stApp {{
-        font-family: 'Manrope', sans-serif !important;
+        font-family: 'Inter', sans-serif !important;
         background-color: var(--bg-color) !important;
         color: var(--text-color) !important;
         transition: background-color 0.2s ease, color 0.2s ease;
@@ -169,14 +169,27 @@ def inject_theme_css():
         transform: translateY(0px) !important;
     }}
     
-    /* Native Metric Override */
+    /* Native Metric Override - Dark Mode compliant */
     [data-testid="stMetric"] {{
-        background-color: var(--card-bg) !important;
+        background-color: var(--card-bg-solid) !important;
         border: var(--card-border) !important;
         border-radius: 16px !important;
         padding: 20px !important;
         box-shadow: var(--card-shadow) !important;
-        backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px) !important;
+    }}
+    [data-testid="stMetric"] [data-testid="stMetricLabel"] > div {{
+        color: var(--muted-text) !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.08em !important;
+    }}
+    [data-testid="stMetric"] [data-testid="stMetricValue"] > div {{
+        color: var(--text-color) !important;
+        font-size: 32px !important;
+        font-weight: 800 !important;
+        letter-spacing: -0.02em !important;
     }}
     
     /* Slider Styling */
@@ -195,7 +208,7 @@ def inject_theme_css():
     
     /* Expander Container overrides */
     div[data-testid="stExpander"] {{
-        background-color: var(--card-bg) !important;
+        background-color: var(--card-bg-solid) !important;
         border: var(--card-border) !important;
         border-radius: 12px !important;
         box-shadow: var(--card-shadow) !important;
@@ -203,7 +216,7 @@ def inject_theme_css():
     
     /* Custom Card CSS Helper Class for html injections */
     .custom-card {{
-        background-color: var(--card-bg) !important;
+        background-color: var(--card-bg-solid) !important;
         border: var(--card-border) !important;
         border-radius: 16px;
         padding: 24px;

@@ -140,6 +140,7 @@ st.markdown("### 📦 Product Line breakdowns")
 p1, p2 = st.columns([3, 2])
 
 with p1:
+    st.markdown("#### Avg Attainment by Region")
     fig_pb = product_region_bar(df)
     st.plotly_chart(fig_pb, use_container_width=True)
 
@@ -152,16 +153,16 @@ with p2:
     fig_pie = go.Figure(go.Pie(
         labels=prod_df['product_line'], values=prod_df['total'],
         hole=0.5, marker=dict(colors=[c['primary'], c['success'], c['warning']]),
-        textinfo='percent+label', textfont=dict(size=11, family='Manrope'),
+        textinfo='percent+label', textfont=dict(size=11, family='Inter'),
     ))
     fig_pie.update_layout(
-        title=f'<b>Revenue Product-Mix — {region_sel}</b>',
-        title_font=dict(size=16, family='Manrope'),
+        title=None,
         paper_bgcolor='rgba(0,0,0,0)', 
-        font=dict(color=c['text'], family='Manrope'),
+        font=dict(color=c['text'], family='Inter'),
         height=350,
-        margin=dict(t=50, b=30, l=10, r=10),
+        margin=dict(t=30, b=30, l=10, r=10),
     )
+    st.markdown(f"#### Revenue Product-Mix — {region_sel}")
     st.plotly_chart(fig_pie, use_container_width=True)
 
 # ── Monthly Region Trend ──────────────────────────────────────────
@@ -183,15 +184,15 @@ fig_mt.add_hline(y=100, line_dash='dash', line_color=c['text'], annotation_text=
 
 PLOTLY_THEME = dict(
     plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)',
-    font=dict(color=c['text'], family='Manrope'),
+    font=dict(color=c['text'], family='Inter'),
     xaxis=dict(gridcolor=c['grid'], color=c['text']),
     yaxis=dict(gridcolor=c['grid'], color=c['text']),
 )
 
-fig_mt.update_layout(title='<b>Regional Trends — FY 2024</b>',
-                      title_font=dict(size=16, family='Manrope'),
+fig_mt.update_layout(title=None,
                       legend=dict(orientation='h', y=1.12),
                       hovermode='x unified', 
-                      margin=dict(t=50, b=30, l=10, r=10),
+                      margin=dict(t=30, b=30, l=10, r=10),
                       **PLOTLY_THEME)
+st.markdown("#### Regional Trends — FY 2024")
 st.plotly_chart(fig_mt, use_container_width=True)

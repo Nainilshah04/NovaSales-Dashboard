@@ -104,7 +104,7 @@ comm_delta = sim['sim_comm'].sum() - df['commission_earned'].sum()
 # Plotly theme setup
 PLOTLY_THEME = dict(
     plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)',
-    font=dict(color=c['text'], family='Manrope'),
+    font=dict(color=c['text'], family='Inter'),
     xaxis=dict(gridcolor=c['grid'], color=c['text']),
     yaxis=dict(gridcolor=c['grid'], color=c['text']),
 )
@@ -137,14 +137,14 @@ with col_result:
     ))
     fig_s.update_layout(
         barmode='group', 
-        title='<b>Slab Rates Comparison</b>',
-        title_font=dict(size=16, family='Manrope'),
+        title=None,
         yaxis_title='Rate (%)', 
         height=320, 
         legend=dict(orientation='h', y=1.12),
-        margin=dict(t=50, b=30, l=10, r=10),
+        margin=dict(t=30, b=30, l=10, r=10),
         **PLOTLY_THEME
     )
+    st.markdown("#### Slab Rates Comparison")
     st.plotly_chart(fig_s, use_container_width=True)
 
 # ── Monthly Comparison Trend ──────────────────────────────────────
@@ -165,13 +165,13 @@ fig_mc.add_trace(go.Scatter(
     fill='tonexty', fillcolor=c['fill_primary'],
 ))
 fig_mc.update_layout(
-    title='<b>Monthly Payout Comparison</b>',
-    title_font=dict(size=16, family='Manrope'),
+    title=None,
     legend=dict(orientation='h', y=1.12),
     hovermode='x unified', 
-    margin=dict(t=50, b=30, l=10, r=10),
+    margin=dict(t=30, b=30, l=10, r=10),
     **PLOTLY_THEME
 )
+st.markdown("#### Monthly Payout Comparison")
 st.plotly_chart(fig_mc, use_container_width=True)
 
 # ── Rep-Level Impact Table ────────────────────────────────────────

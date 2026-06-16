@@ -205,9 +205,9 @@ with t_col:
     # Check theme to apply a clean styled table
     st.dataframe(
         show_df.style
-        .background_gradient(subset=['Attain %'], cmap='Purples' if st.session_state.theme == 'dark' else 'RdYlGn', vmin=50, vmax=130)
+        .background_gradient(subset=['Attainment %'], cmap='Purples' if st.session_state.theme == 'dark' else 'RdYlGn', vmin=50, vmax=130)
         .format({'Target':'₹{:,.0f}','Actual':'₹{:,.0f}',
-                 'Attain %':'{:.1f}%','Commission':'₹{:,.0f}','Bonus':'₹{:,.0f}'}),
+                 'Attainment %':'{:.1f}%','Commission':'₹{:,.0f}','Bonus':'₹{:,.0f}'}),
         use_container_width=True, height=280,
     )
 
@@ -215,10 +215,12 @@ with t_col:
 c1, c2 = st.columns(2)
 
 with c1:
+    st.markdown("#### Quota vs Actual Sales")
     fig_bar = rep_quota_vs_actual_bar(rep_df)
     st.plotly_chart(fig_bar, use_container_width=True)
 
 with c2:
+    st.markdown("#### Commission & Bonus Trend")
     fig_line = commission_line_chart(rep_df)
     st.plotly_chart(fig_line, use_container_width=True)
 
@@ -231,22 +233,20 @@ fig_at.add_trace(go.Scatter(
     marker=dict(size=10, color=rep_sorted['attainment_pct_display'].apply(
         lambda x: c['success'] if x >= 100 else c['danger'])),
     text=rep_sorted['attainment_pct_display'].apply(lambda x: f'{x:.0f}%'),
-    textposition='top center', textfont=dict(size=10, color=c['text'], family='Manrope'),
+    textposition='top center', textfont=dict(size=10, color=c['text'], family='Inter'),
 ))
 fig_at.add_hline(y=100, line_dash='dash', line_color=c['success'], annotation_text='Quota', annotation_font=dict(color=c['success']))
 fig_at.add_hline(y=80, line_dash='dot', line_color=c['warning'], annotation_text='Warning', annotation_font=dict(color=c['warning']))
-fig_at.update_layout(title=f'<b>{selected_rep} — Attainment Trend Over Time</b>',
-                      title_font=dict(size=16, family='Manrope'),
+fig_at.update_layout(title=None,
                       yaxis_range=[0, max(rep_sorted['attainment_pct_display'].max()+20, 140)],
                       plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)',
-                      font=dict(color=c['text'], family='Manrope'),
+                      font=dict(color=c['text'], family='Inter'),
                       xaxis=dict(color=c['text']),
                       yaxis=dict(color=c['text'], gridcolor=c['grid']),
-                      margin=dict(t=50, b=30, l=10, r=10))
+                      margin=dict(t=30, b=30, l=10, r=10))
+st.markdown(f"#### Attainment Trend Over Time")
 st.plotly_chart(fig_at, use_container_width=True)
 
-# ── Peer Comparison ───────────────────────────────────────────────
-st.markdown("### 🔄 Peer Comparison")
 peers = (
     df[(df['region']==info['region']) & (df['product_line']==info['product_line'])]
     .groupby('name').agg(avg_att=('attainment_pct_display','mean'))
@@ -256,15 +256,16 @@ peers['highlight'] = peers['name'] == selected_rep
 
 fig_p = px.bar(peers, x='name', y='avg_att', color='highlight',
                color_discrete_map={True: c['primary'], False: c['fill_primary']},
-               title=f'<b>Peer Comparison — {info["region"]} | {info["product_line"]}</b>')
+               title=None)
 fig_p.add_hline(y=100, line_dash='dash', line_color=c['text'])
 fig_p.update_layout(
     showlegend=False, 
     xaxis_tickangle=-45,
     plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)',
-    font=dict(color=c['text'], family='Manrope'),
+    font=dict(color=c['text'], family='Inter'),
     xaxis=dict(color=c['text']),
     yaxis=dict(color=c['text'], gridcolor=c['grid']),
-    margin=dict(t=50, b=30, l=10, r=10)
+    margin=dict(t=30, b=30, l=10, r=10)
 )
+st.markdown(f"### Peer Comparison — {info['region']} | {info['product_line']}")
 st.plotly_chart(fig_p, use_container_width=True)

@@ -94,15 +94,14 @@ def monthly_payout_trend(df):
     ))
     
     fig.update_layout(
-        title='<b>Monthly Payout Trend (2024)</b>',
-        title_font=dict(size=16, family='Manrope'),
+        title=None,
         xaxis=dict(title='Month', gridcolor=c['grid'], color=c['text']),
         yaxis=dict(title='Amount (₹)', gridcolor=c['grid'], color=c['text']),
         plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(color=c['text'], family='Manrope'),
-        legend=dict(orientation='h', y=1.1, font=dict(size=11)), 
+        font=dict(color=c['text'], family='Inter'),
+        legend=dict(orientation='h', y=1.12, font=dict(size=11)), 
         hovermode='x unified',
-        margin=dict(t=50, b=30, l=10, r=10),
+        margin=dict(t=30, b=30, l=10, r=10),
     )
     return fig
 
@@ -117,10 +116,10 @@ def attainment_gauge(attainment_pct, rep_name):
         mode='gauge+number+delta',
         value=attainment_pct,
         delta={'reference': 100, 'suffix': '%'},
-        title={'text': f"<b>{rep_name}</b><br><span style='font-size:12px;color:{c['neutral']}'>Quota Attainment</span>", 'font': {'size': 14, 'family': 'Manrope'}},
-        number={'suffix': '%', 'font': {'size': 28, 'family': 'Manrope', 'weight': 'bold'}, 'valueformat': '.1f'},
+        title={'text': f"<b>{rep_name}</b><br><span style='font-size:12px;color:{c['neutral']}'>Quota Attainment</span>", 'font': {'size': 14, 'family': 'Inter'}},
+        number={'suffix': '%', 'font': {'size': 28, 'family': 'Inter', 'weight': 'bold'}, 'valueformat': '.1f'},
         gauge={
-            'axis': {'range': [0, 150], 'ticksuffix': '%', 'tickcolor': c['text']},
+            'axis': {'range': [0, 150], 'ticksuffix': '%'},
             'bar': {'color': color, 'thickness': 0.28},
             'steps': [
                 {'range': [0, 50], 'color': c['steps_danger']},
@@ -136,8 +135,8 @@ def attainment_gauge(attainment_pct, rep_name):
     ))
     fig.update_layout(
         height=260, paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(color=c['text'], family='Manrope'),
-        margin=dict(t=60, b=10, l=20, r=20),
+        font=dict(color=c['text'], family='Inter'),
+        margin=dict(t=30, b=10, l=20, r=20),
     )
     return fig
 
@@ -159,14 +158,13 @@ def rep_quota_vs_actual_bar(rep_df):
     
     fig.update_layout(
         barmode='group', 
-        title='<b>Monthly Quota vs Actual Sales</b>',
-        title_font=dict(size=16, family='Manrope'),
+        title=None,
         xaxis=dict(title='Month', color=c['text'], gridcolor=c['grid']),
         yaxis=dict(title='Amount (₹)', color=c['text'], gridcolor=c['grid']),
         plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(color=c['text'], family='Manrope'),
-        legend=dict(orientation='h', y=1.1, font=dict(size=11)),
-        margin=dict(t=50, b=30, l=10, r=10),
+        font=dict(color=c['text'], family='Inter'),
+        legend=dict(orientation='h', y=1.12, font=dict(size=11)),
+        margin=dict(t=30, b=30, l=10, r=10),
     )
     return fig
 
@@ -191,15 +189,14 @@ def commission_line_chart(rep_df):
     ))
     
     fig.update_layout(
-        title='<b>Commission & Bonus Earned Per Month</b>',
-        title_font=dict(size=16, family='Manrope'),
+        title=None,
         xaxis=dict(title='Month', color=c['text'], gridcolor=c['grid']),
         yaxis=dict(title='Amount (₹)', color=c['text'], gridcolor=c['grid']),
         plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(color=c['text'], family='Manrope'), 
+        font=dict(color=c['text'], family='Inter'), 
         hovermode='x unified',
-        legend=dict(orientation='h', y=1.1, font=dict(size=11)),
-        margin=dict(t=50, b=30, l=10, r=10),
+        legend=dict(orientation='h', y=1.12, font=dict(size=11)),
+        margin=dict(t=30, b=30, l=10, r=10),
     )
     return fig
 
@@ -229,20 +226,19 @@ def region_heatmap(df):
         colorscale=colorscale,
         zmin=50, zmax=130,
         text=pivot.values.round(1), texttemplate='%{text}%',
-        textfont=dict(size=11, family='Manrope', color='#FFFFFF'), # Keep labels white for contrast on heat color
+        textfont=dict(size=11, family='Inter', color='#FFFFFF'), # Keep labels white for contrast on heat color
         hovertemplate='Region: %{y}<br>Month: %{x}<br>Attainment: %{z:.1f}%<extra></extra>',
         colorbar=dict(title='Attainment %', ticksuffix='%', tickcolor=c['text']),
     ))
     
     fig.update_layout(
-        title='<b>Region x Month Quota Attainment Heatmap</b>',
-        title_font=dict(size=16, family='Manrope'),
+        title=None,
         xaxis=dict(title='Month', color=c['text']),
         yaxis=dict(title='Region', color=c['text']),
         plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(color=c['text'], family='Manrope'), 
+        font=dict(color=c['text'], family='Inter'), 
         height=320,
-        margin=dict(t=50, b=30, l=10, r=10),
+        margin=dict(t=30, b=30, l=10, r=10),
     )
     return fig
 
@@ -255,7 +251,7 @@ def product_region_bar(df):
     )
     fig = px.bar(
         agg, x='region', y='attainment_pct_display', color='product_line',
-        barmode='group', title='<b>Product Line Performance by Region</b>',
+        barmode='group', title=None,
         labels={'attainment_pct_display': 'Avg Attainment %', 'region': 'Region'},
         color_discrete_map=c['products'],
     )
@@ -264,14 +260,13 @@ def product_region_bar(df):
                   annotation_font=dict(color=c['text']))
                   
     fig.update_layout(
-        title_font=dict(size=16, family='Manrope'),
         xaxis=dict(color=c['text'], gridcolor='rgba(0,0,0,0)'),
         yaxis=dict(color=c['text'], gridcolor=c['grid']),
         plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(color=c['text'], family='Manrope'), 
+        font=dict(color=c['text'], family='Inter'), 
         legend_title='Product Line',
         legend=dict(font=dict(size=11)),
-        margin=dict(t=50, b=30, l=10, r=10),
+        margin=dict(t=30, b=30, l=10, r=10),
     )
     return fig
 
@@ -301,13 +296,12 @@ def waterfall_payout(df):
     
     fig.update_layout(
         barmode='stack', 
-        title='<b>Total Payout Breakdown by Region</b>',
-        title_font=dict(size=16, family='Manrope'),
+        title=None,
         xaxis=dict(color=c['text'], gridcolor='rgba(0,0,0,0)'),
         yaxis=dict(title='Amount (₹)', color=c['text'], gridcolor=c['grid']),
         plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(color=c['text'], family='Manrope'),
-        legend=dict(orientation='h', y=1.1, font=dict(size=11)),
-        margin=dict(t=50, b=30, l=10, r=10),
+        font=dict(color=c['text'], family='Inter'),
+        legend=dict(orientation='h', y=1.12, font=dict(size=11)),
+        margin=dict(t=30, b=30, l=10, r=10),
     )
     return fig
