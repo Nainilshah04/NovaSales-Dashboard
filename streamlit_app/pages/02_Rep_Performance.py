@@ -10,7 +10,7 @@ import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from streamlit_app.utils.data_loader import load_data
-from streamlit_app.utils.theme_manager import inject_theme_css, render_theme_toggle, lucide_icon
+from streamlit_app.utils.theme_manager import inject_theme_css, render_theme_toggle, lucide_icon, st_html
 from streamlit_app.utils.chart_helpers import (
     get_theme_colors, 
     attainment_gauge, 
@@ -31,7 +31,7 @@ with st.sidebar:
     render_theme_toggle()
 
 # ── Header ────────────────────────────────────────────────────────
-st.markdown(f"""
+st_html(f"""
 <div style="background:linear-gradient(135deg, var(--card-bg-solid), var(--bg-color));
             border: var(--card-border);
             padding:40px; border-radius:20px; margin-bottom:25px;
@@ -51,7 +51,7 @@ st.markdown(f"""
         </div>
     </div>
 </div>
-""", unsafe_allow_html=True)
+""")
 
 # ── Selector ──────────────────────────────────────────────────────
 sel1, sel2 = st.columns([3, 5])
@@ -66,7 +66,7 @@ best_month = rep_df.loc[rep_df['attainment_pct_display'].idxmax(), 'month_label'
 top_months = rep_df['is_top_performer'].sum()
 
 # ── Rep Profile Card ──────────────────────────────────────────────
-st.markdown(f"""
+st_html(f"""
 <div class="custom-card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
     <div>
         <div style="font-size:26px; font-weight:800; color:var(--text-color); display:flex; align-items:center;">
@@ -105,7 +105,7 @@ st.markdown(f"""
         <div style="color:var(--muted-text); font-size:13px; font-weight:600;">Avg Attainment</div>
     </div>
 </div>
-""", unsafe_allow_html=True)
+""")
 
 # ── KPI Row ───────────────────────────────────────────────────────
 k1, k2, k3, k4 = st.columns(4)
@@ -184,7 +184,7 @@ else:
         </div>
     </div>
     """
-st.markdown(goget_html, unsafe_allow_html=True)
+st_html(goget_html)
 
 # ── Gauge + Table ─────────────────────────────────────────────────
 g_col, t_col = st.columns([1, 2])

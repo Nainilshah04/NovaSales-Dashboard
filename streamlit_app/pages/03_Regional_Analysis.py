@@ -10,7 +10,7 @@ import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from streamlit_app.utils.data_loader import load_data
-from streamlit_app.utils.theme_manager import inject_theme_css, render_theme_toggle, lucide_icon
+from streamlit_app.utils.theme_manager import inject_theme_css, render_theme_toggle, lucide_icon, st_html
 from streamlit_app.utils.chart_helpers import get_theme_colors, region_heatmap, product_region_bar
 
 st.set_page_config(page_title="Regional Analysis", page_icon="🗺️", layout="wide")
@@ -26,7 +26,7 @@ with st.sidebar:
     render_theme_toggle()
 
 # ── Header ────────────────────────────────────────────────────────
-st.markdown(f"""
+st_html(f"""
 <div style="background:linear-gradient(135deg, var(--card-bg-solid), var(--bg-color));
             border: var(--card-border);
             padding:40px; border-radius:20px; margin-bottom:25px;
@@ -46,7 +46,7 @@ st.markdown(f"""
         </div>
     </div>
 </div>
-""", unsafe_allow_html=True)
+""")
 
 # ── Region Stats Calculations ─────────────────────────────────────
 rs = (df.groupby('region').agg(
@@ -66,7 +66,7 @@ worst = rs.loc[rs['avg_att'].idxmin()]
 c1, c2 = st.columns(2)
 
 with c1:
-    st.markdown(f"""
+    st_html(f"""
     <div class="custom-card" style="background:var(--success-bg) !important; border:2px solid var(--success) !important; text-align:center;">
         <div style="margin-bottom:8px; display:flex; justify-content:center;">
             {lucide_icon('trophy', size=36, color='var(--success)', extra_style='margin-right:0;')}
@@ -82,10 +82,10 @@ with c1:
             <strong>₹{best['total_pay']/10000000:.1f}Cr</strong> total payout
         </div>
     </div>
-    """, unsafe_allow_html=True)
+    """)
 
 with c2:
-    st.markdown(f"""
+    st_html(f"""
     <div class="custom-card" style="background:var(--danger-bg) !important; border:2px solid var(--danger) !important; text-align:center;">
         <div style="margin-bottom:8px; display:flex; justify-content:center;">
             {lucide_icon('trending-down', size=36, color='var(--danger)', extra_style='margin-right:0;')}
@@ -101,7 +101,7 @@ with c2:
             <strong>₹{worst['total_pay']/10000000:.1f}Cr</strong> total payout
         </div>
     </div>
-    """, unsafe_allow_html=True)
+    """)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
@@ -112,7 +112,7 @@ rcols = st.columns(4)
 for i, (_, row) in enumerate(rs.iterrows()):
     with rcols[i]:
         # Custom region card
-        st.markdown(f"""
+        st_html(f"""
         <div class="custom-card" style="margin-bottom:0;">
             <div style="font-size:12px; color:var(--muted-text); font-weight:700; text-transform:uppercase; letter-spacing:0.08em; display:flex; align-items:center;">
                 {lucide_icon('map-pin', size=14, color='var(--accent-primary)', extra_style='margin-right:4px;')}
@@ -126,7 +126,7 @@ for i, (_, row) in enumerate(rs.iterrows()):
                 Active Team: <strong>{int(row['reps'])} reps</strong>
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
 st.markdown("<br>", unsafe_allow_html=True)
 

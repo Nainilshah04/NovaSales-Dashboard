@@ -6,7 +6,7 @@ import sys
 import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from streamlit_app.utils.theme_manager import inject_theme_css, render_theme_toggle, lucide_icon
+from streamlit_app.utils.theme_manager import inject_theme_css, render_theme_toggle, lucide_icon, st_html
 
 st.set_page_config(
     page_title="NovaSales | Sales Compensation Analytics",
@@ -20,7 +20,7 @@ inject_theme_css()
 
 # ── Sidebar ──────────────────────────────────────────────────────
 with st.sidebar:
-    st.markdown(f"<h2>{lucide_icon('activity', size=28)} NOVASALES</h2>", unsafe_allow_html=True)
+    st_html(f"<h2>{lucide_icon('activity', size=28)} NOVASALES</h2>")
     st.caption("COMPENSATION ANALYTICS")
     st.markdown("---")
     st.markdown("**ABOUT NOVASALES**")
@@ -37,7 +37,7 @@ with st.sidebar:
     render_theme_toggle()
 
 # ── Top Banner ───────────────────────────────────────────────────
-st.markdown(f"""
+st_html(f"""
 <div style="background:var(--card-bg-solid); color:var(--text-color); padding:12px 20px;
             text-align:center; font-size:14px; font-weight:600;
             border-bottom: var(--card-border);
@@ -47,13 +47,13 @@ st.markdown(f"""
     {lucide_icon('flame', size=18, color='var(--warning)', extra_style='margin-right:8px;')}
     <span><strong>NovaSales Analytics 2024</strong> — Real-time sales compensation insights</span>
 </div>
-""", unsafe_allow_html=True)
+""")
 
 # ── Hero Section ─────────────────────────────────────────────────
 left, right = st.columns([3, 2])
 
 with left:
-    st.markdown(f"""
+    st_html(f"""
     <div style="background:var(--accent-light); display:inline-block; padding:8px 16px;
                 border-radius:20px; border:var(--card-border); margin-bottom:20px;
                 display: inline-flex; align-items: center;">
@@ -62,9 +62,9 @@ with left:
             AI-Powered Analytics Platform
         </span>
     </div>
-    """, unsafe_allow_html=True)
+    """)
 
-    st.markdown("""
+    st_html("""
     <h1 style="font-size:52px; font-weight:800; line-height:1.1;
                letter-spacing:-0.03em; margin:20px 0;">
         Optimize sales
@@ -72,19 +72,19 @@ with left:
         with data-driven
         <span style="color:var(--accent-primary);">insights</span>
     </h1>
-    """, unsafe_allow_html=True)
+    """)
 
-    st.markdown("""
+    st_html("""
     <p style="font-size:17px; color:var(--muted-text); line-height:1.7; max-width:550px;">
         NovaSales is a comprehensive sales compensation analytics platform
         combining intelligent commission engines, real-time performance tracking,
         and what-if scenario modeling — enabling finance teams to make
         data-driven decisions at scale.
     </p>
-    """, unsafe_allow_html=True)
+    """)
 
 with right:
-    st.markdown(f"""
+    st_html(f"""
     <div style="background:linear-gradient(135deg, var(--card-bg), var(--accent-light));
                 border:var(--card-border); border-radius:20px;
                 padding:30px; margin-top:20px; box-shadow:var(--card-shadow);
@@ -96,7 +96,7 @@ with right:
         </div>
         <div style="font-size:12px; color:var(--muted-text); margin-bottom:20px;">Live Dashboard</div>
     </div>
-    """, unsafe_allow_html=True)
+    """)
 
     # Progress bars using Streamlit native inside the right block
     st.markdown("<div style='padding:0 10px;'>", unsafe_allow_html=True)
@@ -111,7 +111,7 @@ with right:
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ── Tech Stack Strip ─────────────────────────────────────────────
-st.markdown("""
+st_html("""
 <div style="background:linear-gradient(135deg, var(--accent-primary), var(--accent-hover));
             padding:30px; border-radius:16px; text-align:center; margin:40px 0;
             box-shadow: var(--card-shadow);">
@@ -125,10 +125,10 @@ st.markdown("""
         <span>SQLITE</span><span>STREAMLIT</span><span>POWER BI</span>
     </div>
 </div>
-""", unsafe_allow_html=True)
+""")
 
 # ── Features Section ─────────────────────────────────────────────
-st.markdown("""
+st_html("""
 <h1 style="text-align:center; font-size:42px; font-weight:800; margin:50px 0 10px 0;">
     A complete <span style="color:var(--accent-primary);">sales compensation</span><br>
     analytics platform
@@ -136,7 +136,7 @@ st.markdown("""
 <p style="text-align:center; font-size:16px; color:var(--muted-text); margin-bottom:40px;">
     NovaSales unifies all aspects of sales performance management.
 </p>
-""", unsafe_allow_html=True)
+""")
 
 f1, f2, f3, f4 = st.columns(4)
 
@@ -149,7 +149,7 @@ features = [
 
 for col, (icon_name, title, desc) in zip([f1, f2, f3, f4], features):
     with col:
-        st.markdown(f"""
+        st_html(f"""
         <div class="custom-card" style="height:220px;">
             <div style="width:44px; height:44px; background:linear-gradient(135deg, var(--accent-primary), var(--accent-hover));
                         border-radius:10px; display:flex; align-items:center;
@@ -161,7 +161,7 @@ for col, (icon_name, title, desc) in zip([f1, f2, f3, f4], features):
                         margin-bottom:10px;">{title}</div>
             <div style="font-size:13px; color:var(--muted-text); line-height:1.5;">{desc}</div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
 # ── Stats ─────────────────────────────────────────────────────────
 st.markdown("<br>", unsafe_allow_html=True)
@@ -171,16 +171,16 @@ stats = [("80", "Sales Reps"), ("960", "Records"), ("₹13.2Cr", "Total Payouts"
 
 for col, (num, label) in zip([q1, q2, q3, q4], stats):
     with col:
-        st.markdown(f"""
+        st_html(f"""
         <div class="custom-card" style="text-align:center;">
             <div style="font-size:42px; font-weight:800; color:var(--accent-primary);">{num}</div>
             <div style="font-size:12px; color:var(--muted-text); text-transform:uppercase;
                         letter-spacing:0.1em; font-weight:600; margin-top:10px;">{label}</div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
 # ── CTA Footer ────────────────────────────────────────────────────
-st.markdown("""
+st_html("""
 <div style="background:linear-gradient(135deg, var(--card-bg-solid), var(--bg-color));
             border: var(--card-border);
             margin:50px 0 30px 0; padding:60px; border-radius:24px; text-align:center;
@@ -194,10 +194,10 @@ st.markdown("""
         ← Use the sidebar to navigate all 5 analytics pages
     </div>
 </div>
-""", unsafe_allow_html=True)
+""")
 
-st.markdown(f"""
+st_html(f"""
 <p style="text-align:center; color:var(--muted-text); font-size:12px; display:flex; align-items:center; justify-content:center;">
     Built with {lucide_icon('heart', size=12, color='var(--accent-primary)')} | Portfolio Project | NovaSales Pvt Ltd © 2024
 </p>
-""", unsafe_allow_html=True)
+""")

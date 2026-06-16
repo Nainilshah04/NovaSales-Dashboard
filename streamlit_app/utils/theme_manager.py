@@ -3,6 +3,7 @@ Theme Manager for NovaSales Dashboard.
 Handles Light/Dark Mode styles using CSS variables, custom overrides, and dynamic Lucide SVG icons.
 """
 import streamlit as st
+import textwrap
 
 def init_theme():
     """Initializes the theme state in session_state if not already present."""
@@ -19,10 +20,13 @@ def render_theme_toggle():
     init_theme()
     
     st.sidebar.markdown("<br>", unsafe_allow_html=True)
-    st.sidebar.subheader("🎨 Customize Interface")
     
-    # Toggle switch logic
-    is_dark = st.sidebar.toggle("🌙 Dark Mode", value=(st.session_state.theme == 'dark'))
+    # Render header using Lucide icon instead of emoji
+    st_html(f"<h3>{lucide_icon('palette', size=20, color='var(--accent-primary)')} Customize Interface</h3>")
+    
+    # Toggle switch dynamic label
+    theme_label = "🌙 Dark Mode" if st.session_state.theme == 'dark' else "☀️ Light Mode"
+    is_dark = st.sidebar.toggle(theme_label, value=(st.session_state.theme == 'dark'))
     
     new_theme = 'dark' if is_dark else 'light'
     
@@ -33,16 +37,11 @@ def render_theme_toggle():
 
 def lucide_icon(icon_name, size=24, color="var(--accent-primary)", extra_style=""):
     """Returns raw HTML for rendering a Lucide icon dynamically using CSS mask-image."""
-    return f"""
-    <span class="lucide-icon" style="
-        width: {size}px; 
-        height: {size}px; 
-        background-color: {color}; 
-        -webkit-mask-image: url('https://api.iconify.design/lucide:{icon_name}.svg'); 
-        mask-image: url('https://api.iconify.design/lucide:{icon_name}.svg');
-        {extra_style}">
-    </span>
-    """
+    return f"""<span class="lucide-icon" style="width: {size}px; height: {size}px; background-color: {color}; -webkit-mask-image: url('https://api.iconify.design/lucide:{icon_name}.svg'); mask-image: url('https://api.iconify.design/lucide:{icon_name}.svg'); {extra_style}"></span>"""
+
+def st_html(html_content):
+    """Renders HTML in Streamlit after dedenting it to prevent markdown code block formatting."""
+    st.markdown(textwrap.dedent(html_content), unsafe_allow_html=True)
 
 def inject_theme_css():
     """Injects the CSS variables and Streamlit overrides based on the active theme."""
@@ -110,7 +109,7 @@ def inject_theme_css():
     full_css = f"""
     <style>
     :root {{
-        {css_vars}
+        {textwrap.dedent(css_vars)}
     }}
     
     @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
@@ -233,4 +232,4 @@ def inject_theme_css():
     </style>
     """
     
-    st.markdown(full_css, unsafe_allow_html=True)
+    st.markdown(textwrap.dedent(full_css), unsafe_allow_html=True)

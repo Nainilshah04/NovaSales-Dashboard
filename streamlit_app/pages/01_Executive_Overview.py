@@ -9,7 +9,7 @@ import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from streamlit_app.utils.data_loader import load_data, get_month_options
-from streamlit_app.utils.theme_manager import inject_theme_css, render_theme_toggle, lucide_icon
+from streamlit_app.utils.theme_manager import inject_theme_css, render_theme_toggle, lucide_icon, st_html
 from streamlit_app.utils.chart_helpers import get_theme_colors
 
 st.set_page_config(page_title="Executive Overview", page_icon="🏠", layout="wide")
@@ -24,7 +24,7 @@ with st.sidebar:
     render_theme_toggle()
 
 # ── Header ───────────────────────────────────────────────────────
-st.markdown(f"""
+st_html(f"""
 <div style="background:linear-gradient(135deg, var(--card-bg-solid), var(--bg-color));
             border: var(--card-border);
             padding:40px; border-radius:20px; margin-bottom:30px;
@@ -44,7 +44,7 @@ st.markdown(f"""
         </div>
     </div>
 </div>
-""", unsafe_allow_html=True)
+""")
 
 # ── Filters ──────────────────────────────────────────────────────
 f1, f2, _ = st.columns([2, 2, 4])
@@ -102,7 +102,7 @@ kpi_data = [
 
 for col, icon_name, label, value, delta, delta_color in kpi_data:
     with col:
-        st.markdown(f"""
+        st_html(f"""
         <div class="custom-card" style="padding:22px; margin-bottom:0;">
             <div style="margin-bottom:12px; height: 32px;">
                 {lucide_icon(icon_name, size=28, color='var(--accent-primary)')}
@@ -113,7 +113,7 @@ for col, icon_name, label, value, delta, delta_color in kpi_data:
                         margin:6px 0; letter-spacing:-0.02em;">{value}</div>
             <div style="font-size:12px; color:{delta_color}; font-weight:700;">{delta}</div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
@@ -126,7 +126,7 @@ medals = ['🥇', '🥈', '🥉', '🏅', '🏅']
 
 for i, (_, row) in enumerate(top5.iterrows()):
     with cols[i]:
-        st.markdown(f"""
+        st_html(f"""
         <div class="custom-card" style="text-align:center; padding:20px; margin-bottom:0; background:linear-gradient(135deg, var(--card-bg), var(--accent-light)) !important;">
             <div style="font-size:30px;">{medals[i]}</div>
             <div style="font-weight:700; color:var(--text-color); font-size:14px;
@@ -138,7 +138,7 @@ for i, (_, row) in enumerate(top5.iterrows()):
             <div style="color:var(--success); font-size:12px; font-weight:700;">
                 ₹{row['commission_earned']/1000:.0f}K earned</div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
@@ -225,7 +225,7 @@ with b1:
         st.success("✅ No at-risk reps this month!")
     else:
         for _, row in at_risk.iterrows():
-            st.markdown(f"""
+            st_html(f"""
             <div style="background:var(--danger-bg); border:1px solid var(--danger);
                         border-radius:12px; padding:14px; margin:6px 0;
                         display:flex; justify-content:space-between; align-items:center;
@@ -242,7 +242,7 @@ with b1:
                     {row['attainment_pct_display']:.0f}%
                 </span>
             </div>
-            """, unsafe_allow_html=True)
+            """)
 
 with b2:
     st.markdown("### 🗺️ Region Performance")

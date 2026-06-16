@@ -10,7 +10,7 @@ import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from streamlit_app.utils.data_loader import load_data
-from streamlit_app.utils.theme_manager import inject_theme_css, render_theme_toggle, lucide_icon
+from streamlit_app.utils.theme_manager import inject_theme_css, render_theme_toggle, lucide_icon, st_html
 from streamlit_app.utils.chart_helpers import get_theme_colors
 
 st.set_page_config(page_title="Incentive Simulator", page_icon="⚙️", layout="wide")
@@ -26,7 +26,7 @@ with st.sidebar:
     render_theme_toggle()
 
 # ── Header ────────────────────────────────────────────────────────
-st.markdown(f"""
+st_html(f"""
 <div style="background:linear-gradient(135deg, var(--card-bg-solid), var(--bg-color));
             border: var(--card-border);
             padding:40px; border-radius:20px; margin-bottom:25px;
@@ -46,7 +46,7 @@ st.markdown(f"""
         </div>
     </div>
 </div>
-""", unsafe_allow_html=True)
+""")
 
 # ── Simulation Logic Helper ──────────────────────────────────────
 def calc_sim(row, slabs):
@@ -60,31 +60,31 @@ def calc_sim(row, slabs):
     return sales * rate
 
 # ── Main Content ──────────────────────────────────────────────────
-st.markdown(f"### {lucide_icon('settings', size=20, color='var(--accent-primary)')} Configure Commission Slabs", unsafe_allow_html=True)
+st_html(f"### {lucide_icon('settings', size=20, color='var(--accent-primary)')} Configure Commission Slabs")
 
 col_slab, col_result = st.columns([2, 3])
 
 with col_slab:
-    st.markdown("<div class='custom-card'>", unsafe_allow_html=True)
-    st.markdown("<b style='color:var(--text-color);'>Slab 1: 0-50% Attainment</b>", unsafe_allow_html=True)
+    st_html("<div class='custom-card'>")
+    st_html("<b style='color:var(--text-color);'>Slab 1: 0-50% Attainment</b>")
     s1 = st.slider("Rate %", 0.0, 10.0, 0.0, 0.5, key='s1')
     
-    st.markdown("<b style='color:var(--text-color);'>Slab 2: 51-80%</b>", unsafe_allow_html=True)
+    st_html("<b style='color:var(--text-color);'>Slab 2: 51-80%</b>")
     s2 = st.slider("Rate %", 0.0, 15.0, 5.0, 0.5, key='s2')
     
-    st.markdown("<b style='color:var(--text-color);'>Slab 3: 81-100%</b>", unsafe_allow_html=True)
+    st_html("<b style='color:var(--text-color);'>Slab 3: 81-100%</b>")
     s3 = st.slider("Rate %", 0.0, 20.0, 10.0, 0.5, key='s3')
     
-    st.markdown("<b style='color:var(--text-color);'>Slab 4: 101-120%</b>", unsafe_allow_html=True)
+    st_html("<b style='color:var(--text-color);'>Slab 4: 101-120%</b>")
     s4 = st.slider("Rate %", 0.0, 25.0, 15.0, 0.5, key='s4')
     
-    st.markdown("<b style='color:var(--text-color);'>Slab 5: 120%+ (Accelerator)</b>", unsafe_allow_html=True)
+    st_html("<b style='color:var(--text-color);'>Slab 5: 120%+ (Accelerator)</b>")
     s5 = st.slider("Rate %", 0.0, 35.0, 20.0, 0.5, key='s5')
     
-    st.markdown("<hr style='border-color:var(--input-border);'>", unsafe_allow_html=True)
-    st.markdown("<b style='color:var(--text-color);'>Top Performer Bonus %</b>", unsafe_allow_html=True)
+    st_html("<hr style='border-color:var(--input-border);'>")
+    st_html("<b style='color:var(--text-color);'>Top Performer Bonus %</b>")
     bonus = st.slider("Bonus Rate %", 0.0, 15.0, 5.0)
-    st.markdown("</div>", unsafe_allow_html=True)
+    st_html("</div>")
 
 # Run Simulation Calculations
 slabs = {'s1':s1, 's2':s2, 's3':s3, 's4':s4, 's5':s5}
