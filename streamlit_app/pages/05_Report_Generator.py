@@ -1,47 +1,46 @@
 """
-Page 5: Report Generator - Forma.ai Purple Theme
+Page 5: Report Generator - Dynamic Theme
 """
 import streamlit as st
 import pandas as pd
 import io
 from datetime import datetime
-import plotly.graph_objects as go
-import sys, os
+import sys
+import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from streamlit_app.utils.data_loader import load_data, get_month_options
+from streamlit_app.utils.theme_manager import inject_theme_css, render_theme_toggle
 
 st.set_page_config(page_title="Report Generator", page_icon="📋", layout="wide")
 
-st.markdown("""
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
-html, body, [class*="css"] { font-family: 'Manrope', sans-serif !important; }
-.stApp { background: #FFFFFF; color: #1A0B2E; }
-[data-testid="stSidebar"] { background: #FAFAFC; border-right: 1px solid #E9E5F5; }
-h1,h2,h3 { font-family:'Manrope',sans-serif !important; font-weight:800 !important; color:#1A0B2E !important; }
-#MainMenu, footer, header { visibility: hidden; }
-.stSelectbox > div > div { background:#F5F3FF !important; border:1px solid #E9E5F5 !important; border-radius:10px !important; }
-</style>
-""", unsafe_allow_html=True)
+# ── CSS & Theme ──────────────────────────────────────────────────
+inject_theme_css()
 
 df = load_data()
 
+# ── Sidebar ──────────────────────────────────────────────────────
+with st.sidebar:
+    render_theme_toggle()
+
+# ── Header ────────────────────────────────────────────────────────
 st.markdown("""
-<div style="background:linear-gradient(135deg,#1A0B2E,#2D1B4E);
+<div style="background:linear-gradient(135deg, var(--card-bg-solid), var(--bg-color));
+            border: var(--card-border);
             padding:40px; border-radius:20px; margin-bottom:25px;
-            box-shadow: 0 10px 40px rgba(109,40,217,0.15);">
-    <div style="color:#FFFFFF; font-size:38px; font-weight:800;
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(12px);">
+    <div style="color:var(--text-color); font-size:38px; font-weight:800;
                 letter-spacing:-0.02em; line-height:1.2;">
-        📋 Report <span style="color:#A78BFA;">Generator</span>
+        📋 Report <span style="color:var(--accent-primary);">Generator</span>
     </div>
-    <div style="color:#C4B5FD; font-size:15px; margin-top:10px; font-weight:500;">
+    <div style="color:var(--muted-text); font-size:15px; margin-top:10px; font-weight:500;">
         Auto-generate compensation reports. Export to Excel.
     </div>
 </div>
 """, unsafe_allow_html=True)
 
-# ── Params ────────────────────────────────────────────────────────
+# ── Parameters ────────────────────────────────────────────────────
 p1, p2, p3 = st.columns(3)
 with p1:
     mo = get_month_options(df)
@@ -56,7 +55,7 @@ if sel_reg != 'All Regions': rdf = rdf[rdf['region'] == sel_reg]
 if sel_prod != 'All Products': rdf = rdf[rdf['product_line'] == sel_prod]
 
 if len(rdf) == 0:
-    st.warning("No data found.")
+    st.warning("No data found matching current filter choices.")
     st.stop()
 
 total_reps = len(rdf)
@@ -72,25 +71,22 @@ oa = (total_sales/total_target*100) if total_target>0 else 0
 
 reg_disp = sel_reg if sel_reg!='All Regions' else 'All'
 
-# ── Report Header ─────────────────────────────────────────────────
+# ── Report Card Header ────────────────────────────────────────────
 st.markdown(f"""
-<div style="background:linear-gradient(135deg,#F5F3FF,#EDE9FE);
-            border:1px solid #DDD6FE; border-radius:20px;
-            padding:30px; margin-bottom:25px;
-            display:flex; justify-content:space-between; align-items:center;">
+<div class="custom-card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
     <div>
-        <div style="font-size:22px; font-weight:800; color:#6D28D9;">
-            📋 NovaSales Compensation Report
+        <div style="font-size:22px; font-weight:800; color:var(--accent-primary);">
+            📋 NovaSales Compensation Report Summary
         </div>
-        <div style="color:#64748B; margin-top:8px; font-size:14px;">
+        <div style="color:var(--muted-text); margin-top:8px; font-size:14px;">
             Period: <strong>{sel_month}</strong> •
             Region: <strong>{reg_disp}</strong> •
             Generated: {datetime.now().strftime('%d %b %Y, %H:%M')}
         </div>
     </div>
     <div style="text-align:right;">
-        <div style="font-size:36px; color:#6D28D9; font-weight:800;">{oa:.1f}%</div>
-        <div style="color:#64748B; font-size:13px;">Team Attainment</div>
+        <div style="font-size:36px; color:var(--accent-primary); font-weight:800; line-height:1;">{oa:.1f}%</div>
+        <div style="color:var(--muted-text); font-size:13px; font-weight:600;">Team Attainment</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -104,7 +100,7 @@ s4.metric("Above Quota", f"{above}/{total_reps}")
 s5.metric("Avg Attainment", f"{avg_att:.1f}%")
 s6.metric("At-Risk", f"{at_risk} reps")
 
-# ── Top / Risk ────────────────────────────────────────────────────
+# ── Top / Risk Lists ──────────────────────────────────────────────
 t_col, r_col = st.columns(2)
 
 with t_col:
@@ -113,15 +109,16 @@ with t_col:
     medals = ['🥇','🥈','🥉','🏅','🏅']
     for i, (_, row) in enumerate(top5.iterrows()):
         st.markdown(f"""
-        <div style="background:#F5F3FF; border:1px solid #E9E5F5;
+        <div style="background:var(--card-bg); border:var(--card-border);
                     border-radius:12px; padding:12px 16px; margin:6px 0;
-                    display:flex; justify-content:space-between; align-items:center;">
+                    display:flex; justify-content:space-between; align-items:center;
+                    box-shadow: var(--card-shadow);">
             <div>
                 <span style="font-size:16px;">{medals[i]}</span>
-                <strong style="color:#1A0B2E;"> {row['name']}</strong>
-                <span style="color:#64748B; font-size:12px;"> • {row['region']}</span>
+                <strong style="color:var(--text-color);"> {row['name']}</strong>
+                <span style="color:var(--muted-text); font-size:12px;"> • {row['region']}</span>
             </div>
-            <span style="background:#6D28D9; color:white; padding:4px 12px;
+            <span style="background:var(--accent-primary); color:white; padding:4px 12px;
                          border-radius:20px; font-weight:700; font-size:13px;">
                 {row['attainment_pct_display']:.0f}%
             </span>
@@ -132,19 +129,20 @@ with r_col:
     st.markdown("### ⚠️ At-Risk Reps")
     risk = rdf[rdf['attainment_pct_display']<60].nsmallest(5,'attainment_pct_display')
     if len(risk)==0:
-        st.success("✅ No reps below 60%!")
+        st.success("✅ No reps below 60% attainment this month!")
     else:
         for _, row in risk.iterrows():
             st.markdown(f"""
-            <div style="background:#FEF2F2; border:1px solid #FEE2E2;
-                        border-left:3px solid #EF4444;
+            <div style="background:var(--danger-bg); border:1px solid var(--danger);
+                        border-left:3px solid var(--danger) !important;
                         border-radius:12px; padding:12px 16px; margin:6px 0;
-                        display:flex; justify-content:space-between; align-items:center;">
+                        display:flex; justify-content:space-between; align-items:center;
+                        box-shadow: var(--card-shadow);">
                 <div>
-                    <strong style="color:#1A0B2E;">⚠️ {row['name']}</strong>
-                    <span style="color:#64748B; font-size:12px;"> • {row['region']}</span>
+                    <strong style="color:var(--text-color);">⚠️ {row['name']}</strong>
+                    <span style="color:var(--muted-text); font-size:12px;"> • {row['region']}</span>
                 </div>
-                <span style="background:#EF4444; color:white; padding:4px 12px;
+                <span style="background:var(--danger); color:white; padding:4px 12px;
                              border-radius:20px; font-weight:700; font-size:13px;">
                     {row['attainment_pct_display']:.0f}%
                 </span>
@@ -163,7 +161,7 @@ ledger.columns = ['Name','Region','Product','Quota','Sales','Deals','Attain %',
 
 st.dataframe(
     ledger.style
-    .background_gradient(subset=['Attain %'], cmap='RdYlGn', vmin=50, vmax=130)
+    .background_gradient(subset=['Attain %'], cmap='Purples' if st.session_state.theme == 'dark' else 'RdYlGn', vmin=50, vmax=130)
     .format({'Quota':'₹{:,.0f}','Sales':'₹{:,.0f}','Attain %':'{:.1f}%',
              'Rate':'{:.0%}','Commission':'₹{:,.0f}','Bonus':'₹{:,.0f}',
              'Base':'₹{:,.0f}','Total Payout':'₹{:,.0f}'}),
@@ -177,6 +175,7 @@ def gen_excel(rdf, ledger):
     buf = io.BytesIO()
     with pd.ExcelWriter(buf, engine='xlsxwriter') as w:
         wb = w.book
+        # We can keep clean styles for the output excel file
         hdr = wb.add_format({'bold':True,'bg_color':'#6D28D9','font_color':'white','border':1})
         ttl = wb.add_format({'bold':True,'font_size':16,'font_color':'#6D28D9'})
 

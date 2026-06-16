@@ -1,50 +1,48 @@
 """
-Page 4: Incentive Simulator - Forma.ai Purple Theme
+Page 4: Incentive Simulator - Dynamic Theme
 """
 import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
-import sys, os
+import sys
+import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from streamlit_app.utils.data_loader import load_data
+from streamlit_app.utils.theme_manager import inject_theme_css, render_theme_toggle
+from streamlit_app.utils.chart_helpers import get_theme_colors
 
 st.set_page_config(page_title="Incentive Simulator", page_icon="⚙️", layout="wide")
 
-st.markdown("""
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
-html, body, [class*="css"] { font-family: 'Manrope', sans-serif !important; }
-.stApp { background: #FFFFFF; color: #1A0B2E; }
-[data-testid="stSidebar"] { background: #FAFAFC; border-right: 1px solid #E9E5F5; }
-h1,h2,h3 { font-family:'Manrope',sans-serif !important; font-weight:800 !important; color:#1A0B2E !important; }
-#MainMenu, footer, header { visibility: hidden; }
-</style>
-""", unsafe_allow_html=True)
-
-PURPLE_THEME = dict(
-    plot_bgcolor='white', paper_bgcolor='white',
-    font=dict(color='#1A0B2E', family='Manrope'),
-    xaxis=dict(gridcolor='#F5F3FF'), yaxis=dict(gridcolor='#F5F3FF'),
-)
+# ── CSS & Theme ──────────────────────────────────────────────────
+inject_theme_css()
+c = get_theme_colors()
 
 df = load_data()
 
+# ── Sidebar ──────────────────────────────────────────────────────
+with st.sidebar:
+    render_theme_toggle()
+
+# ── Header ────────────────────────────────────────────────────────
 st.markdown("""
-<div style="background:linear-gradient(135deg,#1A0B2E,#2D1B4E);
+<div style="background:linear-gradient(135deg, var(--card-bg-solid), var(--bg-color));
+            border: var(--card-border);
             padding:40px; border-radius:20px; margin-bottom:25px;
-            box-shadow: 0 10px 40px rgba(109,40,217,0.15);">
-    <div style="color:#FFFFFF; font-size:38px; font-weight:800;
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(12px);">
+    <div style="color:var(--text-color); font-size:38px; font-weight:800;
                 letter-spacing:-0.02em; line-height:1.2;">
-        ⚙️ Incentive Plan <span style="color:#A78BFA;">Simulator</span>
+        ⚙️ Incentive Plan <span style="color:var(--accent-primary);">Simulator</span>
     </div>
-    <div style="color:#C4B5FD; font-size:15px; margin-top:10px; font-weight:500;">
+    <div style="color:var(--muted-text); font-size:15px; margin-top:10px; font-weight:500;">
         What-if analysis — adjust slabs, see real-time payout impact
     </div>
 </div>
 """, unsafe_allow_html=True)
 
+# ── Simulation Logic Helper ──────────────────────────────────────
 def calc_sim(row, slabs):
     att = row['attainment_pct']
     sales = row['actual_sales']
@@ -55,24 +53,34 @@ def calc_sim(row, slabs):
     else: rate = slabs['s5'] / 100
     return sales * rate
 
+# ── Main Content ──────────────────────────────────────────────────
 st.markdown("### 🎛️ Configure Commission Slabs")
 
 col_slab, col_result = st.columns([2, 3])
 
 with col_slab:
-    st.markdown("**Slab 1: 0-50% Attainment**")
+    st.markdown("<div class='custom-card'>", unsafe_allow_html=True)
+    st.markdown("<b style='color:var(--text-color);'>Slab 1: 0-50% Attainment</b>", unsafe_allow_html=True)
     s1 = st.slider("Rate %", 0.0, 10.0, 0.0, 0.5, key='s1')
-    st.markdown("**Slab 2: 51-80%**")
+    
+    st.markdown("<b style='color:var(--text-color);'>Slab 2: 51-80%</b>", unsafe_allow_html=True)
     s2 = st.slider("Rate %", 0.0, 15.0, 5.0, 0.5, key='s2')
-    st.markdown("**Slab 3: 81-100%**")
+    
+    st.markdown("<b style='color:var(--text-color);'>Slab 3: 81-100%</b>", unsafe_allow_html=True)
     s3 = st.slider("Rate %", 0.0, 20.0, 10.0, 0.5, key='s3')
-    st.markdown("**Slab 4: 101-120%**")
+    
+    st.markdown("<b style='color:var(--text-color);'>Slab 4: 101-120%</b>", unsafe_allow_html=True)
     s4 = st.slider("Rate %", 0.0, 25.0, 15.0, 0.5, key='s4')
-    st.markdown("**Slab 5: 120%+ (Accelerator)**")
+    
+    st.markdown("<b style='color:var(--text-color);'>Slab 5: 120%+ (Accelerator)</b>", unsafe_allow_html=True)
     s5 = st.slider("Rate %", 0.0, 35.0, 20.0, 0.5, key='s5')
-    st.markdown("---")
-    bonus = st.slider("Top Performer Bonus %", 0.0, 15.0, 5.0, 0.5)
+    
+    st.markdown("<hr style='border-color:var(--input-border);'>", unsafe_allow_html=True)
+    st.markdown("<b style='color:var(--text-color);'>Top Performer Bonus %</b>", unsafe_allow_html=True)
+    bonus = st.slider("Bonus Rate %", 0.0, 15.0, 5.0)
+    st.markdown("</div>", unsafe_allow_html=True)
 
+# Run Simulation Calculations
 slabs = {'s1':s1, 's2':s2, 's3':s3, 's4':s4, 's5':s5}
 sim = df.copy()
 sim['sim_comm'] = sim.apply(lambda r: calc_sim(r, slabs), axis=1)
@@ -87,32 +95,53 @@ delta = sim_total - base_total
 pct = (delta / base_total * 100) if base_total > 0 else 0
 comm_delta = sim['sim_comm'].sum() - df['commission_earned'].sum()
 
+# Plotly theme setup
+PLOTLY_THEME = dict(
+    plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)',
+    font=dict(color=c['text'], family='Manrope'),
+    xaxis=dict(gridcolor=c['grid'], color=c['text']),
+    yaxis=dict(gridcolor=c['grid'], color=c['text']),
+)
+
 with col_result:
     st.markdown("### 📊 Real-Time Impact")
 
+    # Metrics
     m1, m2, m3 = st.columns(3)
-    m1.metric("Baseline Payout", f"₹{base_total/1000000:.2f}M")
-    m2.metric("Simulated Payout", f"₹{sim_total/1000000:.2f}M",
-              f"{'+' if pct>=0 else ''}{pct:.1f}%")
-    m3.metric("Commission Δ", f"₹{comm_delta/1000:+,.0f}K")
+    with m1:
+        st.metric("Baseline Payout", f"₹{base_total/10000000:.2f}Cr")
+    with m2:
+        st.metric("Simulated Payout", f"₹{sim_total/10000000:.2f}Cr", f"{'+' if pct>=0 else ''}{pct:.1f}%")
+    with m3:
+        st.metric("Commission Δ", f"₹{comm_delta/1000:+,.0f}K")
 
-    # Slab comparison
+    # Slab comparison chart
     fig_s = go.Figure()
     fig_s.add_trace(go.Bar(
         x=['0-50%','51-80%','81-100%','101-120%','120%+'],
-        y=[0, 5, 10, 15, 20], name='Current',
-        marker_color='rgba(109,40,217,0.3)',
+        y=[0, 5, 10, 15, 20], name='Current Plan',
+        marker_color=c['fill_primary'],
+        marker_line_color=c['primary'],
+        marker_line_width=1.5,
     ))
     fig_s.add_trace(go.Bar(
         x=['0-50%','51-80%','81-100%','101-120%','120%+'],
-        y=[s1, s2, s3, s4, s5], name='Simulated',
-        marker_color='#6D28D9',
+        y=[s1, s2, s3, s4, s5], name='Simulated Plan',
+        marker_color=c['success'],
     ))
-    fig_s.update_layout(barmode='group', title='<b>Slab Rates Comparison</b>',
-                         yaxis_title='Rate (%)', height=300, **PURPLE_THEME)
+    fig_s.update_layout(
+        barmode='group', 
+        title='<b>Slab Rates Comparison</b>',
+        title_font=dict(size=16, family='Manrope'),
+        yaxis_title='Rate (%)', 
+        height=320, 
+        legend=dict(orientation='h', y=1.12),
+        margin=dict(t=50, b=30, l=10, r=10),
+        **PLOTLY_THEME
+    )
     st.plotly_chart(fig_s, use_container_width=True)
 
-# ── Monthly Comparison ────────────────────────────────────────────
+# ── Monthly Comparison Trend ──────────────────────────────────────
 st.markdown("### 📈 Monthly Payout: Current vs Simulated")
 
 mc = (sim.groupby(['month','month_label'])
@@ -121,20 +150,26 @@ mc = (sim.groupby(['month','month_label'])
 
 fig_mc = go.Figure()
 fig_mc.add_trace(go.Scatter(
-    x=mc['month_label'], y=mc['base_p'], name='Current',
-    mode='lines+markers', line=dict(color='#A78BFA', width=2.5),
+    x=mc['month_label'], y=mc['base_p'], name='Current Plan',
+    mode='lines+markers', line=dict(color=c['primary'], width=2.5),
 ))
 fig_mc.add_trace(go.Scatter(
-    x=mc['month_label'], y=mc['sim_p'], name='Simulated',
-    mode='lines+markers', line=dict(color='#6D28D9', width=3, dash='dash'),
-    fill='tonexty', fillcolor='rgba(109,40,217,0.08)',
+    x=mc['month_label'], y=mc['sim_p'], name='Simulated Plan',
+    mode='lines+markers', line=dict(color=c['success'], width=3, dash='dash'),
+    fill='tonexty', fillcolor=c['fill_primary'],
 ))
-fig_mc.update_layout(title='<b>Monthly Payout Comparison</b>',
-                      hovermode='x unified', **PURPLE_THEME)
+fig_mc.update_layout(
+    title='<b>Monthly Payout Comparison</b>',
+    title_font=dict(size=16, family='Manrope'),
+    legend=dict(orientation='h', y=1.12),
+    hovermode='x unified', 
+    margin=dict(t=50, b=30, l=10, r=10),
+    **PLOTLY_THEME
+)
 st.plotly_chart(fig_mc, use_container_width=True)
 
-# ── Impact Table ──────────────────────────────────────────────────
-st.markdown("### 👥 Rep-Level Impact")
+# ── Rep-Level Impact Table ────────────────────────────────────────
+st.markdown("### 👥 Rep-Level Impact Analysis")
 
 impact = (sim.groupby(['name','region','product_line']).agg(
     base_comm=('commission_earned','sum'), sim_comm=('sim_comm','sum'),
@@ -147,7 +182,7 @@ impact = impact.sort_values('delta', ascending=False)
 
 st.dataframe(
     impact.style
-    .background_gradient(subset=['avg_att'], cmap='RdYlGn', vmin=50, vmax=130)
+    .background_gradient(subset=['avg_att'], cmap='Purples' if st.session_state.theme == 'dark' else 'RdYlGn', vmin=50, vmax=130)
     .format({'base_comm':'₹{:,.0f}','sim_comm':'₹{:,.0f}',
              'base_pay':'₹{:,.0f}','sim_pay':'₹{:,.0f}',
              'delta':'₹{:,.0f}','avg_att':'{:.1f}%','pct_chg':'{:+.1f}%'}),

@@ -1,43 +1,40 @@
 """
-Page 1: Executive Overview - Forma.ai Purple Theme
+Page 1: Executive Overview - Dynamic Theme
 """
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
-import plotly.express as px
-import sys, os
+import sys
+import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from streamlit_app.utils.data_loader import load_data, get_month_options
+from streamlit_app.utils.theme_manager import inject_theme_css, render_theme_toggle
+from streamlit_app.utils.chart_helpers import get_theme_colors
 
 st.set_page_config(page_title="Executive Overview", page_icon="🏠", layout="wide")
 
 # ── CSS ──────────────────────────────────────────────────────────
-st.markdown("""
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
-html, body, [class*="css"] { font-family: 'Manrope', sans-serif !important; }
-.stApp { background: #FFFFFF; color: #1A0B2E; }
-[data-testid="stSidebar"] { background: #FAFAFC; border-right: 1px solid #E9E5F5; }
-h1,h2,h3 { font-family:'Manrope',sans-serif !important; font-weight:800 !important; color:#1A0B2E !important; }
-#MainMenu, footer, header { visibility: hidden; }
-.stSelectbox > div > div { background:#F5F3FF !important; border:1px solid #E9E5F5 !important; border-radius:10px !important; }
-[data-testid="stMetric"] { background:#F5F3FF; border:1px solid #E9E5F5; border-radius:14px; padding:20px; }
-</style>
-""", unsafe_allow_html=True)
+inject_theme_css()
 
 df = load_data()
 
+# ── Sidebar ──────────────────────────────────────────────────────
+with st.sidebar:
+    render_theme_toggle()
+
 # ── Header ───────────────────────────────────────────────────────
 st.markdown("""
-<div style="background:linear-gradient(135deg,#1A0B2E,#2D1B4E);
+<div style="background:linear-gradient(135deg, var(--card-bg-solid), var(--bg-color));
+            border: var(--card-border);
             padding:40px; border-radius:20px; margin-bottom:30px;
-            box-shadow: 0 10px 40px rgba(109,40,217,0.15);">
-    <div style="color:#FFFFFF; font-size:38px; font-weight:800;
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(12px);">
+    <div style="color:var(--text-color); font-size:38px; font-weight:800;
                 letter-spacing:-0.02em; line-height:1.2;">
-        🏠 Executive <span style="color:#A78BFA;">Overview</span>
+        🏠 Executive <span style="color:var(--accent-primary);">Overview</span>
     </div>
-    <div style="color:#C4B5FD; font-size:15px; margin-top:10px; font-weight:500;">
+    <div style="color:var(--muted-text); font-size:15px; margin-top:10px; font-weight:500;">
         Real-time sales compensation insights for leadership
     </div>
 </div>
@@ -75,6 +72,9 @@ if prev_month_num and prev_month_num >= 1:
 else:
     payout_chg = 0
 
+# Get current theme colors for local Plotly styling
+c = get_theme_colors()
+
 # ── KPI Cards ────────────────────────────────────────────────────
 st.markdown("### 📊 Key Performance Indicators")
 
@@ -83,28 +83,27 @@ k1, k2, k3, k4, k5 = st.columns(5)
 kpi_data = [
     (k1, "💰", "Total Payout", f"₹{total_payout/100000:.1f}L",
      f"{'▲' if payout_chg>=0 else '▼'} {abs(payout_chg):.1f}% MoM",
-     "#10B981" if payout_chg >= 0 else "#EF4444"),
+     c['success'] if payout_chg >= 0 else c['danger']),
     (k2, "🏆", "Quota Hit Rate", f"{pct_above:.0f}%",
-     f"{reps_above}/{total_reps} reps", "#64748B"),
+     f"{reps_above}/{total_reps} reps", c['neutral']),
     (k3, "📈", "Avg Attainment", f"{avg_attain:.1f}%",
-     "Team average", "#64748B"),
+     "Team average", c['neutral']),
     (k4, "🎯", "Commission Paid", f"₹{total_commission/100000:.1f}L",
-     "Variable component", "#64748B"),
+     "Variable component", c['neutral']),
     (k5, "🤝", "Deals Closed", f"{total_deals:,}",
-     "This month", "#64748B"),
+     "This month", c['neutral']),
 ]
 
 for col, icon, label, value, delta, delta_color in kpi_data:
     with col:
         st.markdown(f"""
-        <div style="background:white; border:1px solid #E9E5F5;
-                    border-radius:16px; padding:22px;">
+        <div class="custom-card" style="padding:22px; margin-bottom:0;">
             <div style="font-size:28px; margin-bottom:12px;">{icon}</div>
-            <div style="font-size:11px; color:#64748B; font-weight:600;
+            <div style="font-size:11px; color:var(--muted-text); font-weight:600;
                         text-transform:uppercase; letter-spacing:0.08em;">{label}</div>
-            <div style="font-size:30px; font-weight:800; color:#1A0B2E;
+            <div style="font-size:30px; font-weight:800; color:var(--text-color);
                         margin:6px 0; letter-spacing:-0.02em;">{value}</div>
-            <div style="font-size:12px; color:{delta_color}; font-weight:600;">{delta}</div>
+            <div style="font-size:12px; color:{delta_color}; font-weight:700;">{delta}</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -120,17 +119,15 @@ medals = ['🥇', '🥈', '🥉', '🏅', '🏅']
 for i, (_, row) in enumerate(top5.iterrows()):
     with cols[i]:
         st.markdown(f"""
-        <div style="background:linear-gradient(135deg,#F5F3FF,#EDE9FE);
-                    border:1px solid #DDD6FE; border-radius:16px;
-                    padding:20px; text-align:center;">
+        <div class="custom-card" style="text-align:center; padding:20px; margin-bottom:0; background:linear-gradient(135deg, var(--card-bg), var(--accent-light)) !important;">
             <div style="font-size:30px;">{medals[i]}</div>
-            <div style="font-weight:700; color:#1A0B2E; font-size:14px;
+            <div style="font-weight:700; color:var(--text-color); font-size:14px;
                         margin:10px 0 4px 0;">{row['name'].split()[0]}</div>
-            <div style="color:#64748B; font-size:11px;">
+            <div style="color:var(--muted-text); font-size:11px;">
                 {row['region']} • {row['product_line']}</div>
-            <div style="color:#6D28D9; font-size:28px; font-weight:800;
+            <div style="color:var(--accent-primary); font-size:28px; font-weight:800;
                         margin:12px 0 4px 0;">{row['attainment_pct_display']:.0f}%</div>
-            <div style="color:#10B981; font-size:12px; font-weight:600;">
+            <div style="color:var(--success); font-size:12px; font-weight:700;">
                 ₹{row['commission_earned']/1000:.0f}K earned</div>
         </div>
         """, unsafe_allow_html=True)
@@ -142,11 +139,12 @@ st.markdown("### 📈 Trends & Distribution")
 
 chart1, chart2 = st.columns([3, 2])
 
-PURPLE_THEME = dict(
-    plot_bgcolor='white', paper_bgcolor='white',
-    font=dict(color='#1A0B2E', family='Manrope'),
-    xaxis=dict(gridcolor='#F5F3FF'),
-    yaxis=dict(gridcolor='#F5F3FF'),
+# Plotly theme configuration
+PLOTLY_THEME = dict(
+    plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)',
+    font=dict(color=c['text'], family='Manrope'),
+    xaxis=dict(gridcolor=c['grid'], color=c['text']),
+    yaxis=dict(gridcolor=c['grid'], color=c['text']),
 )
 
 with chart1:
@@ -163,19 +161,21 @@ with chart1:
     fig.add_trace(go.Scatter(
         x=monthly['month_label'], y=monthly['total_payout'],
         name='Total Payout', mode='lines+markers',
-        line=dict(color='#6D28D9', width=4), marker=dict(size=10),
-        fill='tozeroy', fillcolor='rgba(109,40,217,0.08)',
+        line=dict(color=c['primary'], width=4), marker=dict(size=10),
+        fill='tozeroy', fillcolor=c['fill_primary'],
     ))
     fig.add_trace(go.Scatter(
         x=monthly['month_label'], y=monthly['commission'],
         name='Commission', mode='lines+markers',
-        line=dict(color='#A78BFA', width=2.5, dash='dot'), marker=dict(size=7),
+        line=dict(color=c['success'], width=2.5, dash='dot'), marker=dict(size=7),
     ))
     fig.update_layout(
         title='<b>Monthly Payout Trend</b>',
+        title_font=dict(size=16, family='Manrope'),
         xaxis_title='Month', yaxis_title='Amount (₹)',
         hovermode='x unified', legend=dict(orientation='h', y=1.12),
-        **PURPLE_THEME,
+        margin=dict(t=50, b=30, l=10, r=10),
+        **PLOTLY_THEME,
     )
     st.plotly_chart(fig, use_container_width=True)
 
@@ -187,17 +187,23 @@ with chart2:
                                    bins=bins, labels=labels_b)
     bc = month_df_c['bucket'].value_counts()
 
+    # Dynamic colors for the pie slices matching themes
+    pie_colors = [c['danger'], c['warning'], c['success'], c['primary'], c['accent_hover'] if st.session_state.theme == 'dark' else '#4C1D95']
+    
     fig2 = go.Figure(go.Pie(
         labels=bc.index.tolist(), values=bc.values, hole=0.6,
-        marker=dict(colors=['#FCA5A5','#FCD34D','#86EFAC','#A78BFA','#6D28D9']),
-        textinfo='percent+label', textfont=dict(size=11),
+        marker=dict(colors=pie_colors),
+        textinfo='percent+label', textfont=dict(size=11, family='Manrope'),
     ))
     fig2.update_layout(
         title='<b>Attainment Distribution</b>',
-        paper_bgcolor='white', font=dict(color='#1A0B2E', family='Manrope'),
+        title_font=dict(size=16, family='Manrope'),
+        paper_bgcolor='rgba(0,0,0,0)', font=dict(color=c['text'], family='Manrope'),
         height=400,
+        margin=dict(t=50, b=30, l=10, r=10),
         annotations=[dict(text=f'<b>{total_reps}</b><br>REPS', x=0.5, y=0.5,
-                          font_size=20, showarrow=False)]
+                          font_size=20, font_family='Manrope', showarrow=False,
+                          font_color=c['text'])]
     )
     st.plotly_chart(fig2, use_container_width=True)
 
@@ -212,14 +218,15 @@ with b1:
     else:
         for _, row in at_risk.iterrows():
             st.markdown(f"""
-            <div style="background:#FEF2F2; border:1px solid #FEE2E2;
+            <div style="background:var(--danger-bg); border:1px solid var(--danger);
                         border-radius:12px; padding:14px; margin:6px 0;
-                        display:flex; justify-content:space-between; align-items:center;">
+                        display:flex; justify-content:space-between; align-items:center;
+                        box-shadow: var(--card-shadow);">
                 <div>
-                    <strong style="color:#1A0B2E;">⚠️ {row['name']}</strong>
-                    <span style="color:#64748B; font-size:12px;"> • {row['region']}</span>
+                    <strong style="color:var(--text-color);">⚠️ {row['name']}</strong>
+                    <span style="color:var(--muted-text); font-size:12px;"> • {row['region']}</span>
                 </div>
-                <span style="background:#EF4444; color:white; padding:4px 12px;
+                <span style="background:var(--danger); color:white; padding:4px 12px;
                              border-radius:20px; font-weight:700; font-size:13px;">
                     {row['attainment_pct_display']:.0f}%
                 </span>
@@ -235,12 +242,16 @@ with b2:
     )
     fig3 = go.Figure(go.Bar(
         x=region_summary['region'], y=region_summary['avg_attain'],
-        marker=dict(color=['#6D28D9','#8B5CF6','#A78BFA','#C4B5FD']),
+        marker=dict(color=[c['primary'], c['success'], c['warning'], c['danger']]),
         text=region_summary['avg_attain'].apply(lambda x: f'{x:.1f}%'),
         textposition='outside',
+        textfont=dict(color=c['text'], family='Manrope'),
     ))
-    fig3.add_hline(y=100, line_dash='dash', line_color='#6D28D9',
-                    annotation_text='Quota')
+    fig3.add_hline(y=100, line_dash='dash', line_color=c['primary'],
+                    annotation_text='Quota', annotation_font=dict(color=c['text']))
     fig3.update_layout(title='<b>Avg Attainment by Region</b>',
-                        showlegend=False, height=350, **PURPLE_THEME)
+                        title_font=dict(size=16, family='Manrope'),
+                        showlegend=False, height=350,
+                        margin=dict(t=50, b=30, l=10, r=10),
+                        **PLOTLY_THEME)
     st.plotly_chart(fig3, use_container_width=True)
