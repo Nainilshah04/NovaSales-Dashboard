@@ -117,7 +117,7 @@ def attainment_gauge(attainment_pct, rep_name):
         value=attainment_pct,
         delta={'reference': 100, 'suffix': '%'},
         title={'text': f"<b>{rep_name}</b><br><span style='font-size:12px;color:{c['neutral']}'>Quota Attainment</span>", 'font': {'size': 14, 'family': 'Inter'}},
-        number={'suffix': '%', 'font': {'size': 28, 'family': 'Inter', 'weight': 'bold'}, 'valueformat': '.1f'},
+        number={'suffix': '%', 'font': {'size': 28, 'family': 'Inter'}, 'valueformat': '.1f'},
         gauge={
             'axis': {'range': [0, 150], 'ticksuffix': '%'},
             'bar': {'color': color, 'thickness': 0.28},

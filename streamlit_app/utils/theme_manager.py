@@ -6,34 +6,17 @@ import streamlit as st
 import textwrap
 
 def init_theme():
-    """Initializes the theme state in session_state if not already present."""
-    if 'theme' not in st.session_state:
-        st.session_state.theme = 'dark'  # Default to premium Dark Glassmorphic
+    """Initializes the theme state in session_state to light mode."""
+    st.session_state.theme = 'light'
 
 def get_theme():
-    """Returns the current active theme."""
-    init_theme()
-    return st.session_state.theme
+    """Returns the current active theme (permanently light)."""
+    st.session_state.theme = 'light'
+    return 'light'
 
 def render_theme_toggle():
-    """Renders the theme toggle in the sidebar and handles state changes."""
-    init_theme()
-    
-    st.sidebar.markdown("<br>", unsafe_allow_html=True)
-    
-    # Render header using Lucide icon instead of emoji
-    st_html(f"<h3>{lucide_icon('palette', size=20, color='var(--accent-primary)')} Customize Interface</h3>")
-    
-    # Toggle switch dynamic label
-    theme_label = "🌙 Dark Mode" if st.session_state.theme == 'dark' else "☀️ Light Mode"
-    is_dark = st.sidebar.toggle(theme_label, value=(st.session_state.theme == 'dark'))
-    
-    new_theme = 'dark' if is_dark else 'light'
-    
-    # Rerun only if the theme changes
-    if new_theme != st.session_state.theme:
-        st.session_state.theme = new_theme
-        st.rerun()
+    """No-op: Theme toggle is disabled. NovaSales runs in Premium Light Mode only."""
+    st.session_state.theme = 'light'
 
 def lucide_icon(icon_name, size=24, color="var(--accent-primary)", extra_style=""):
     """Returns raw HTML for rendering a Lucide icon dynamically using CSS mask-image."""
