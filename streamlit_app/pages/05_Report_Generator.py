@@ -10,7 +10,7 @@ import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from streamlit_app.utils.data_loader import load_data, get_month_options
-from streamlit_app.utils.theme_manager import inject_theme_css, render_theme_toggle
+from streamlit_app.utils.theme_manager import inject_theme_css, render_theme_toggle, lucide_icon
 
 st.set_page_config(page_title="Report Generator", page_icon="📋", layout="wide")
 
@@ -24,18 +24,24 @@ with st.sidebar:
     render_theme_toggle()
 
 # ── Header ────────────────────────────────────────────────────────
-st.markdown("""
+st.markdown(f"""
 <div style="background:linear-gradient(135deg, var(--card-bg-solid), var(--bg-color));
             border: var(--card-border);
             padding:40px; border-radius:20px; margin-bottom:25px;
             box-shadow: var(--card-shadow);
-            backdrop-filter: blur(12px);">
-    <div style="color:var(--text-color); font-size:38px; font-weight:800;
-                letter-spacing:-0.02em; line-height:1.2;">
-        📋 Report <span style="color:var(--accent-primary);">Generator</span>
+            backdrop-filter: blur(12px);
+            display: flex; align-items: center;">
+    <div style="margin-right:20px;">
+        {lucide_icon('file-text', size=42, color='var(--accent-primary)')}
     </div>
-    <div style="color:var(--muted-text); font-size:15px; margin-top:10px; font-weight:500;">
-        Auto-generate compensation reports. Export to Excel.
+    <div>
+        <div style="color:var(--text-color); font-size:38px; font-weight:800;
+                    letter-spacing:-0.02em; line-height:1.2;">
+            Report <span style="color:var(--accent-primary);">Generator</span>
+        </div>
+        <div style="color:var(--muted-text); font-size:15px; margin-top:10px; font-weight:500;">
+            Auto-generate compensation reports. Export to Excel.
+        </div>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -75,8 +81,9 @@ reg_disp = sel_reg if sel_reg!='All Regions' else 'All'
 st.markdown(f"""
 <div class="custom-card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
     <div>
-        <div style="font-size:22px; font-weight:800; color:var(--accent-primary);">
-            📋 NovaSales Compensation Report Summary
+        <div style="font-size:22px; font-weight:800; color:var(--accent-primary); display:flex; align-items:center;">
+            {lucide_icon('file-text', size=24, color='var(--accent-primary)', extra_style='margin-right:8px;')}
+            <span>NovaSales Compensation Report Summary</span>
         </div>
         <div style="color:var(--muted-text); margin-top:8px; font-size:14px;">
             Period: <strong>{sel_month}</strong> •
@@ -138,9 +145,12 @@ with r_col:
                         border-radius:12px; padding:12px 16px; margin:6px 0;
                         display:flex; justify-content:space-between; align-items:center;
                         box-shadow: var(--card-shadow);">
-                <div>
-                    <strong style="color:var(--text-color);">⚠️ {row['name']}</strong>
-                    <span style="color:var(--muted-text); font-size:12px;"> • {row['region']}</span>
+                <div style="display:flex; align-items:center;">
+                    {lucide_icon('alert-triangle', size=14, color='var(--danger)', extra_style='margin-right:8px;')}
+                    <div>
+                        <strong style="color:var(--text-color);">{row['name']}</strong>
+                        <span style="color:var(--muted-text); font-size:12px;"> • {row['region']}</span>
+                    </div>
                 </div>
                 <span style="background:var(--danger); color:white; padding:4px 12px;
                              border-radius:20px; font-weight:700; font-size:13px;">

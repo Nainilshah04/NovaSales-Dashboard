@@ -9,7 +9,7 @@ import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from streamlit_app.utils.data_loader import load_data, get_month_options
-from streamlit_app.utils.theme_manager import inject_theme_css, render_theme_toggle
+from streamlit_app.utils.theme_manager import inject_theme_css, render_theme_toggle, lucide_icon
 from streamlit_app.utils.chart_helpers import get_theme_colors
 
 st.set_page_config(page_title="Executive Overview", page_icon="🏠", layout="wide")
@@ -24,18 +24,24 @@ with st.sidebar:
     render_theme_toggle()
 
 # ── Header ───────────────────────────────────────────────────────
-st.markdown("""
+st.markdown(f"""
 <div style="background:linear-gradient(135deg, var(--card-bg-solid), var(--bg-color));
             border: var(--card-border);
             padding:40px; border-radius:20px; margin-bottom:30px;
             box-shadow: var(--card-shadow);
-            backdrop-filter: blur(12px);">
-    <div style="color:var(--text-color); font-size:38px; font-weight:800;
-                letter-spacing:-0.02em; line-height:1.2;">
-        🏠 Executive <span style="color:var(--accent-primary);">Overview</span>
+            backdrop-filter: blur(12px);
+            display: flex; align-items: center;">
+    <div style="margin-right:20px;">
+        {lucide_icon('layout-dashboard', size=42, color='var(--accent-primary)')}
     </div>
-    <div style="color:var(--muted-text); font-size:15px; margin-top:10px; font-weight:500;">
-        Real-time sales compensation insights for leadership
+    <div>
+        <div style="color:var(--text-color); font-size:38px; font-weight:800;
+                    letter-spacing:-0.02em; line-height:1.2;">
+            Executive <span style="color:var(--accent-primary);">Overview</span>
+        </div>
+        <div style="color:var(--muted-text); font-size:15px; margin-top:10px; font-weight:500;">
+            Real-time sales compensation insights for leadership
+        </div>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -81,24 +87,26 @@ st.markdown("### 📊 Key Performance Indicators")
 k1, k2, k3, k4, k5 = st.columns(5)
 
 kpi_data = [
-    (k1, "💰", "Total Payout", f"₹{total_payout/100000:.1f}L",
+    (k1, "dollar-sign", "Total Payout", f"₹{total_payout/100000:.1f}L",
      f"{'▲' if payout_chg>=0 else '▼'} {abs(payout_chg):.1f}% MoM",
      c['success'] if payout_chg >= 0 else c['danger']),
-    (k2, "🏆", "Quota Hit Rate", f"{pct_above:.0f}%",
+    (k2, "award", "Quota Hit Rate", f"{pct_above:.0f}%",
      f"{reps_above}/{total_reps} reps", c['neutral']),
-    (k3, "📈", "Avg Attainment", f"{avg_attain:.1f}%",
+    (k3, "trending-up", "Avg Attainment", f"{avg_attain:.1f}%",
      "Team average", c['neutral']),
-    (k4, "🎯", "Commission Paid", f"₹{total_commission/100000:.1f}L",
+    (k4, "percent", "Commission Paid", f"₹{total_commission/100000:.1f}L",
      "Variable component", c['neutral']),
-    (k5, "🤝", "Deals Closed", f"{total_deals:,}",
+    (k5, "activity", "Deals Closed", f"{total_deals:,}",
      "This month", c['neutral']),
 ]
 
-for col, icon, label, value, delta, delta_color in kpi_data:
+for col, icon_name, label, value, delta, delta_color in kpi_data:
     with col:
         st.markdown(f"""
         <div class="custom-card" style="padding:22px; margin-bottom:0;">
-            <div style="font-size:28px; margin-bottom:12px;">{icon}</div>
+            <div style="margin-bottom:12px; height: 32px;">
+                {lucide_icon(icon_name, size=28, color='var(--accent-primary)')}
+            </div>
             <div style="font-size:11px; color:var(--muted-text); font-weight:600;
                         text-transform:uppercase; letter-spacing:0.08em;">{label}</div>
             <div style="font-size:30px; font-weight:800; color:var(--text-color);
@@ -222,9 +230,12 @@ with b1:
                         border-radius:12px; padding:14px; margin:6px 0;
                         display:flex; justify-content:space-between; align-items:center;
                         box-shadow: var(--card-shadow);">
-                <div>
-                    <strong style="color:var(--text-color);">⚠️ {row['name']}</strong>
-                    <span style="color:var(--muted-text); font-size:12px;"> • {row['region']}</span>
+                <div style="display: flex; align-items: center;">
+                    {lucide_icon('alert-triangle', size=16, color='var(--danger)', extra_style='margin-right:8px;')}
+                    <div>
+                        <strong style="color:var(--text-color);">{row['name']}</strong>
+                        <span style="color:var(--muted-text); font-size:12px;"> • {row['region']}</span>
+                    </div>
                 </div>
                 <span style="background:var(--danger); color:white; padding:4px 12px;
                              border-radius:20px; font-weight:700; font-size:13px;">

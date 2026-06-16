@@ -10,7 +10,7 @@ import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from streamlit_app.utils.data_loader import load_data
-from streamlit_app.utils.theme_manager import inject_theme_css, render_theme_toggle
+from streamlit_app.utils.theme_manager import inject_theme_css, render_theme_toggle, lucide_icon
 from streamlit_app.utils.chart_helpers import (
     get_theme_colors, 
     attainment_gauge, 
@@ -31,18 +31,24 @@ with st.sidebar:
     render_theme_toggle()
 
 # ── Header ────────────────────────────────────────────────────────
-st.markdown("""
+st.markdown(f"""
 <div style="background:linear-gradient(135deg, var(--card-bg-solid), var(--bg-color));
             border: var(--card-border);
             padding:40px; border-radius:20px; margin-bottom:25px;
             box-shadow: var(--card-shadow);
-            backdrop-filter: blur(12px);">
-    <div style="color:var(--text-color); font-size:38px; font-weight:800;
-                letter-spacing:-0.02em; line-height:1.2;">
-        👤 Rep Performance <span style="color:var(--accent-primary);">Drilldown</span>
+            backdrop-filter: blur(12px);
+            display: flex; align-items: center;">
+    <div style="margin-right:20px;">
+        {lucide_icon('user', size=42, color='var(--accent-primary)')}
     </div>
-    <div style="color:var(--muted-text); font-size:15px; margin-top:10px; font-weight:500;">
-        Deep-dive analytics for individual sales representatives
+    <div>
+        <div style="color:var(--text-color); font-size:38px; font-weight:800;
+                    letter-spacing:-0.02em; line-height:1.2;">
+            Rep Performance <span style="color:var(--accent-primary);">Drilldown</span>
+        </div>
+        <div style="color:var(--muted-text); font-size:15px; margin-top:10px; font-weight:500;">
+            Deep-dive analytics for individual sales representatives
+        </div>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -63,22 +69,35 @@ top_months = rep_df['is_top_performer'].sum()
 st.markdown(f"""
 <div class="custom-card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
     <div>
-        <div style="font-size:26px; font-weight:800; color:var(--text-color);">
-            👤 {selected_rep}
+        <div style="font-size:26px; font-weight:800; color:var(--text-color); display:flex; align-items:center;">
+            {lucide_icon('user', size=26, color='var(--accent-primary)', extra_style='margin-right:8px;')}
+            <span>{selected_rep}</span>
         </div>
-        <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+        <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
             <span style="background:var(--accent-light); border:var(--card-border);
                         padding:5px 14px; border-radius:20px;
-                        font-size:12px; color:var(--text-color); font-weight:600;">🗺️ {info['region']}</span>
+                        font-size:12px; color:var(--text-color); font-weight:600; display:inline-flex; align-items:center;">
+                {lucide_icon('map', size=12, color='var(--accent-primary)', extra_style='margin-right:4px;')}
+                {info['region']}
+            </span>
             <span style="background:var(--accent-light); border:var(--card-border);
                         padding:5px 14px; border-radius:20px;
-                        font-size:12px; color:var(--text-color); font-weight:600;">📦 {info['product_line']}</span>
+                        font-size:12px; color:var(--text-color); font-weight:600; display:inline-flex; align-items:center;">
+                {lucide_icon('package', size=12, color='var(--accent-primary)', extra_style='margin-right:4px;')}
+                {info['product_line']}
+            </span>
             <span style="background:var(--accent-light); border:var(--card-border);
                         padding:5px 14px; border-radius:20px;
-                        font-size:12px; color:var(--text-color); font-weight:600;">⏱️ {int(info['tenure_months'])} months tenure</span>
+                        font-size:12px; color:var(--text-color); font-weight:600; display:inline-flex; align-items:center;">
+                {lucide_icon('clock', size=12, color='var(--accent-primary)', extra_style='margin-right:4px;')}
+                {int(info['tenure_months'])} months tenure
+            </span>
             <span style="background:var(--accent-light); border:var(--card-border);
                         padding:5px 14px; border-radius:20px;
-                        font-size:12px; color:var(--text-color); font-weight:600;">💼 ₹{info['base_salary']/100000:.1f}L base salary</span>
+                        font-size:12px; color:var(--text-color); font-weight:600; display:inline-flex; align-items:center;">
+                {lucide_icon('briefcase', size=12, color='var(--accent-primary)', extra_style='margin-right:4px;')}
+                ₹{info['base_salary']/100000:.1f}L base salary
+            </span>
         </div>
     </div>
     <div style="text-align:right;">
@@ -91,13 +110,13 @@ st.markdown(f"""
 # ── KPI Row ───────────────────────────────────────────────────────
 k1, k2, k3, k4 = st.columns(4)
 with k1:
-    st.metric("💰 Variable Earnings", f"₹{total_earnings/1000:.1f}K")
+    st.metric("Variable Earnings", f"₹{total_earnings/1000:.1f}K")
 with k2:
-    st.metric("📊 Total Sales", f"₹{rep_df['actual_sales'].sum()/100000:.1f}L")
+    st.metric("Total Sales", f"₹{rep_df['actual_sales'].sum()/100000:.1f}L")
 with k3:
-    st.metric("🤝 Total Deals", f"{rep_df['deals_closed'].sum()}")
+    st.metric("Total Deals", f"{rep_df['deals_closed'].sum()}")
 with k4:
-    st.metric("⭐ Best Month", best_month)
+    st.metric("Best Month", best_month)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
@@ -116,8 +135,9 @@ if attainment < 100:
     <div style="background: linear-gradient(135deg, var(--card-bg-solid), var(--accent-light)); 
                 border: 1px solid var(--accent-primary); border-radius: 16px; padding: 24px; margin-bottom: 25px;
                 box-shadow: var(--card-shadow); backdrop-filter: blur(12px);">
-        <div style="font-size: 12px; font-weight: 700; color: var(--accent-primary); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">
-            🚀 Forma.ai Motivational Insight
+        <div style="font-size: 12px; font-weight: 700; color: var(--accent-primary); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; display: flex; align-items: center;">
+            {lucide_icon('sparkles', size=16, color='var(--accent-primary)', extra_style='margin-right:8px;')}
+            <span>Forma.ai Motivational Insight</span>
         </div>
         <div style="font-size: 20px; font-weight: 800; color: var(--text-color); line-height: 1.3;">
             Close <span style="color: var(--accent-primary);">₹{deficit:,.0f}</span> more in sales to hit <strong>100% Quota</strong>!
@@ -135,8 +155,9 @@ elif attainment < 120:
     <div style="background: linear-gradient(135deg, var(--card-bg-solid), var(--accent-light)); 
                 border: 1px solid var(--accent-primary); border-radius: 16px; padding: 24px; margin-bottom: 25px;
                 box-shadow: var(--card-shadow); backdrop-filter: blur(12px);">
-        <div style="font-size: 12px; font-weight: 700; color: var(--accent-primary); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">
-            🚀 Forma.ai Accelerator Target
+        <div style="font-size: 12px; font-weight: 700; color: var(--accent-primary); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; display: flex; align-items: center;">
+            {lucide_icon('zap', size=16, color='var(--accent-primary)', extra_style='margin-right:8px;')}
+            <span>Forma.ai Accelerator Target</span>
         </div>
         <div style="font-size: 20px; font-weight: 800; color: var(--text-color); line-height: 1.3;">
             Close <span style="color: var(--accent-primary);">₹{deficit:,.0f}</span> more in sales to unlock the <strong>120%+ Accelerator Tier</strong>!
@@ -151,8 +172,9 @@ else:
     <div style="background: linear-gradient(135deg, var(--card-bg-solid), var(--success-bg)); 
                 border: 1px solid var(--success); border-radius: 16px; padding: 24px; margin-bottom: 25px;
                 box-shadow: var(--card-shadow); backdrop-filter: blur(12px);">
-        <div style="font-size: 12px; font-weight: 700; color: var(--success); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">
-            🏆 Outstanding Performance
+        <div style="font-size: 12px; font-weight: 700; color: var(--success); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; display: flex; align-items: center;">
+            {lucide_icon('award', size=16, color='var(--success)', extra_style='margin-right:8px;')}
+            <span>Outstanding Performance</span>
         </div>
         <div style="font-size: 20px; font-weight: 800; color: var(--text-color); line-height: 1.3;">
             Currently in the **Top Accelerator Slab** ({attainment:.1f}% Attainment)!
@@ -183,9 +205,9 @@ with t_col:
     # Check theme to apply a clean styled table
     st.dataframe(
         show_df.style
-        .background_gradient(subset=['Attainment %'], cmap='Purples' if st.session_state.theme == 'dark' else 'RdYlGn', vmin=50, vmax=130)
+        .background_gradient(subset=['Attain %'], cmap='Purples' if st.session_state.theme == 'dark' else 'RdYlGn', vmin=50, vmax=130)
         .format({'Target':'₹{:,.0f}','Actual':'₹{:,.0f}',
-                 'Attainment %':'{:.1f}%','Commission':'₹{:,.0f}','Bonus':'₹{:,.0f}'}),
+                 'Attain %':'{:.1f}%','Commission':'₹{:,.0f}','Bonus':'₹{:,.0f}'}),
         use_container_width=True, height=280,
     )
 

@@ -10,7 +10,7 @@ import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from streamlit_app.utils.data_loader import load_data
-from streamlit_app.utils.theme_manager import inject_theme_css, render_theme_toggle
+from streamlit_app.utils.theme_manager import inject_theme_css, render_theme_toggle, lucide_icon
 from streamlit_app.utils.chart_helpers import get_theme_colors
 
 st.set_page_config(page_title="Incentive Simulator", page_icon="⚙️", layout="wide")
@@ -26,18 +26,24 @@ with st.sidebar:
     render_theme_toggle()
 
 # ── Header ────────────────────────────────────────────────────────
-st.markdown("""
+st.markdown(f"""
 <div style="background:linear-gradient(135deg, var(--card-bg-solid), var(--bg-color));
             border: var(--card-border);
             padding:40px; border-radius:20px; margin-bottom:25px;
             box-shadow: var(--card-shadow);
-            backdrop-filter: blur(12px);">
-    <div style="color:var(--text-color); font-size:38px; font-weight:800;
-                letter-spacing:-0.02em; line-height:1.2;">
-        ⚙️ Incentive Plan <span style="color:var(--accent-primary);">Simulator</span>
+            backdrop-filter: blur(12px);
+            display: flex; align-items: center;">
+    <div style="margin-right:20px;">
+        {lucide_icon('sliders', size=42, color='var(--accent-primary)')}
     </div>
-    <div style="color:var(--muted-text); font-size:15px; margin-top:10px; font-weight:500;">
-        What-if analysis — adjust slabs, see real-time payout impact
+    <div>
+        <div style="color:var(--text-color); font-size:38px; font-weight:800;
+                    letter-spacing:-0.02em; line-height:1.2;">
+            Incentive Plan <span style="color:var(--accent-primary);">Simulator</span>
+        </div>
+        <div style="color:var(--muted-text); font-size:15px; margin-top:10px; font-weight:500;">
+            What-if analysis — adjust slabs, see real-time payout impact
+        </div>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -54,7 +60,7 @@ def calc_sim(row, slabs):
     return sales * rate
 
 # ── Main Content ──────────────────────────────────────────────────
-st.markdown("### 🎛️ Configure Commission Slabs")
+st.markdown(f"### {lucide_icon('settings', size=20, color='var(--accent-primary)')} Configure Commission Slabs", unsafe_allow_html=True)
 
 col_slab, col_result = st.columns([2, 3])
 

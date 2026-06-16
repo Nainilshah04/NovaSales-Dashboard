@@ -6,7 +6,7 @@ import sys
 import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from streamlit_app.utils.theme_manager import inject_theme_css, render_theme_toggle
+from streamlit_app.utils.theme_manager import inject_theme_css, render_theme_toggle, lucide_icon
 
 st.set_page_config(
     page_title="NovaSales | Sales Compensation Analytics",
@@ -20,7 +20,7 @@ inject_theme_css()
 
 # ── Sidebar ──────────────────────────────────────────────────────
 with st.sidebar:
-    st.markdown("## 💜 NOVASALES")
+    st.markdown(f"<h2>{lucide_icon('activity', size=28)} NOVASALES</h2>", unsafe_allow_html=True)
     st.caption("COMPENSATION ANALYTICS")
     st.markdown("---")
     st.markdown("**ABOUT NOVASALES**")
@@ -37,13 +37,15 @@ with st.sidebar:
     render_theme_toggle()
 
 # ── Top Banner ───────────────────────────────────────────────────
-st.markdown("""
+st.markdown(f"""
 <div style="background:var(--card-bg-solid); color:var(--text-color); padding:12px 20px;
             text-align:center; font-size:14px; font-weight:600;
             border-bottom: var(--card-border);
             border-radius:0 0 12px 12px; margin-bottom:30px;
-            box-shadow: var(--card-shadow);">
-    🔥 <strong>NovaSales Analytics 2024</strong> — Real-time sales compensation insights
+            box-shadow: var(--card-shadow);
+            display: flex; align-items: center; justify-content: center;">
+    {lucide_icon('flame', size=18, color='var(--warning)', extra_style='margin-right:8px;')}
+    <span><strong>NovaSales Analytics 2024</strong> — Real-time sales compensation insights</span>
 </div>
 """, unsafe_allow_html=True)
 
@@ -51,11 +53,13 @@ st.markdown("""
 left, right = st.columns([3, 2])
 
 with left:
-    st.markdown("""
+    st.markdown(f"""
     <div style="background:var(--accent-light); display:inline-block; padding:8px 16px;
-                border-radius:20px; border:var(--card-border); margin-bottom:20px;">
+                border-radius:20px; border:var(--card-border); margin-bottom:20px;
+                display: inline-flex; align-items: center;">
+        {lucide_icon('sparkles', size=16, color='var(--accent-primary)', extra_style='margin-right:8px;')}
         <span style="color:var(--accent-primary); font-weight:700; font-size:13px;">
-            ✨ AI-Powered Analytics Platform
+            AI-Powered Analytics Platform
         </span>
     </div>
     """, unsafe_allow_html=True)
@@ -80,14 +84,15 @@ with left:
     """, unsafe_allow_html=True)
 
 with right:
-    st.markdown("""
+    st.markdown(f"""
     <div style="background:linear-gradient(135deg, var(--card-bg), var(--accent-light));
                 border:var(--card-border); border-radius:20px;
                 padding:30px; margin-top:20px; box-shadow:var(--card-shadow);
                 backdrop-filter: blur(12px);">
         <div style="font-size:18px; font-weight:700; color:var(--text-color);
-                    margin-bottom:5px;">
-            💜 Quota Performance
+                    margin-bottom:5px; display:flex; align-items:center;">
+            {lucide_icon('trending-up', size=22, color='var(--accent-primary)', extra_style='margin-right:8px;')}
+            <span>Quota Performance</span>
         </div>
         <div style="font-size:12px; color:var(--muted-text); margin-bottom:20px;">Live Dashboard</div>
     </div>
@@ -136,20 +141,21 @@ st.markdown("""
 f1, f2, f3, f4 = st.columns(4)
 
 features = [
-    ("📊", "Executive Overview", "Real-time KPIs, top performers, monthly payout trends."),
-    ("👤", "Rep Drilldown", "Individual rep gauges, peer comparisons, commission details."),
-    ("🗺️", "Regional Insights", "Geographic heatmaps, product line analysis by region."),
-    ("⚙️", "What-If Simulator", "Adjust commission slabs, see instant payout impact."),
+    ("layout-dashboard", "Executive Overview", "Real-time KPIs, top performers, monthly payout trends."),
+    ("user", "Rep Drilldown", "Individual rep gauges, peer comparisons, commission details."),
+    ("globe", "Regional Insights", "Geographic heatmaps, product line analysis by region."),
+    ("sliders", "What-If Simulator", "Adjust commission slabs, see instant payout impact."),
 ]
 
-for col, (icon, title, desc) in zip([f1, f2, f3, f4], features):
+for col, (icon_name, title, desc) in zip([f1, f2, f3, f4], features):
     with col:
         st.markdown(f"""
         <div class="custom-card" style="height:220px;">
             <div style="width:44px; height:44px; background:linear-gradient(135deg, var(--accent-primary), var(--accent-hover));
                         border-radius:10px; display:flex; align-items:center;
-                        justify-content:center; font-size:22px; color:white;
-                        margin-bottom:15px;">{icon}</div>
+                        justify-content:center; margin-bottom:15px;">
+                {lucide_icon(icon_name, size=24, color='white', extra_style='margin-right:0px;')}
+            </div>
             <div style="width:30px; height:2px; background:var(--accent-primary); margin:12px 0;"></div>
             <div style="font-size:18px; font-weight:700; color:var(--text-color);
                         margin-bottom:10px;">{title}</div>
@@ -190,8 +196,8 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown("""
-<p style="text-align:center; color:var(--muted-text); font-size:12px;">
-    Built with 💜 | Portfolio Project | NovaSales Pvt Ltd © 2024
+st.markdown(f"""
+<p style="text-align:center; color:var(--muted-text); font-size:12px; display:flex; align-items:center; justify-content:center;">
+    Built with {lucide_icon('heart', size=12, color='var(--accent-primary)')} | Portfolio Project | NovaSales Pvt Ltd © 2024
 </p>
 """, unsafe_allow_html=True)
